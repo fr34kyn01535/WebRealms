@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": false,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "typeRoots": [
+          "node_modules/@types"
+        ]
+    },
+    "files": [
+        "src/*.ts",
+        "node_modules/@types/*/index.d.ts"
+    ]
+}

@@ -2,7 +2,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     browserify: {
         main: {
-            src: ["src/*.ts", "!node_modules/**"],
+            src: 'src/*.ts',
             dest: 'dist/bundle.js',
         },
         options: {
@@ -10,7 +10,7 @@ module.exports = function(grunt) {
                 debug: true
             },
             configure: function (bundler) {
-                bundler.plugin(require('tsify'));
+                bundler.plugin(require('tsify'), { typescript: require('typescript'), global: true });
                 bundler.transform(require('babelify'), {
                     presets: ['es2015'],
                     extensions: ['.ts']
@@ -20,7 +20,7 @@ module.exports = function(grunt) {
     },
     watch: {
       configFiles: {
-        files: [ 'Gruntfile.js', 'src/*.ts' ],
+        files: ['gruntfile.js', 'tsconfig.json','src/*.ts' ],
         tasks: ['default'],
         options: {
           reload: true
