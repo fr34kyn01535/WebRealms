@@ -1,7 +1,7 @@
 import * as pixi from 'pixi.js';
 import { SocketConnection } from './SocketConnection'; 
 
-var connection = new SocketConnection("ws://run.screeps.net");
+var connection = new SocketConnection(window.document.location.href.replace("http","ws"));
 pixi.utils.skipHello();
 var renderer = new pixi.WebGLRenderer(800, 600);
 document.body.appendChild(renderer.view);

@@ -10,7 +10,6 @@
         ]
     },
     "files": [
-        "src/*.ts",
         "node_modules/@types/*/index.d.ts"
     ]
 }

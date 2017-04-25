@@ -1,16 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+
 	"github.com/googollee/go-socket.io"
-	"fmt"
-//	"github.com/go-redis/redis"
+	//"github.com/go-redis/redis"
 )
 
 func testHandler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "<div>%s</div>", "test")
-    server.BroadcastTo("chat", "ping", "test")
+	fmt.Fprintf(w, "<div>%s</div>", "test")
+	server.BroadcastTo("chat", "ping", "test")
 }
 
 var server *socketio.Server
