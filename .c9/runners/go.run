@@ -1,0 +1,19 @@
+// This file overrides the built-in go runner
+// For more information see http://docs.c9.io:8080/#!/api/run-method-run
+{
+  "script": [
+    "set -e",
+    "export GOPATH=/root/webrealms/vendor",
+    "if [ \"$debug\" == true ]; then ",
+    "    go build -gcflags \"-N -l\" $file",
+    "    node $HOME/.c9/bin/c9gdbshim.js \"$file_path/$file_base_name\" $args",
+    "else",
+    "    go run $file $args",
+    "fi"
+  ],
+  "info": "Running ... $file",
+  "debugger": "gdb",
+  "$debugDefaultState": false,
+  "env": {},
+  "selector": "source.go"
+}
