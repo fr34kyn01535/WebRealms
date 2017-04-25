@@ -1,17 +1,31 @@
 import * as io from 'socket.io-client';
 
-export class SocketConnection{
-    constructor(address){
-        var socket = io(address);
-        socket.on('connect', function(){
+export class SocketConnection {
+    private socket;
+    public constructor(address: string) {
+        let me = this;
+        me.socket = io(address,{autoConnect: false,reconnection :true});
+        me.socket.on('connect', function(){
             console.log("connected");
         });
-        socket.on('ping', function(data){
-            socket.emit("pong",data);
-            console.log("ping");
+        me.socket.on('ping', function(data){ 
+            console.log("ping",data);
+            
+            console.log("ponging back",data);
+            me.socket.emit("pong",data,function(){
+                console.log("received ak");
+            }); 
+        }); 
+        me.socket.emit("getSomeData", function(data) {
+          console.log(data);
         });
-        socket.on('disconnect', function(){
+        me.socket.on('disconnect', function(){
             console.log("disconnect");
         }); 
+        me.socket.open();
+    }
+    public emit(topic: string,message: any){
+        let me = this;
+        me.socket.emit(topic,message);
     }
 }

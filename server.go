@@ -24,7 +24,7 @@ func main() {
 	server.On("connection", func(so socketio.Socket) {
 		log.Println("on connection")
 		so.Join("chat")
-		
+
 		so.On("disconnection", func() {
 			log.Println("on disconnect")
 		})
@@ -33,15 +33,15 @@ func main() {
 			so.Emit("ping", "hi")
 		})
 		so.Emit("ping", "hi")
-	}) 
+	})
 	server.On("error", func(so socketio.Socket, err error) {
 		log.Println("error:", err)
 	})
 	http.Handle("/socket.io/", server)
 	http.Handle("/", http.FileServer(http.Dir("./www")))
-	
+
 	http.HandleFunc("/test/", testHandler)
-	
+
 	log.Println("Serving at localhost:8182...")
 	log.Fatal(http.ListenAndServe(":8182", nil))
 }
