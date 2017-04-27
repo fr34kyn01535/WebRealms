@@ -1,0 +1,44 @@
+syntax = "proto3";
+package webrealms;
+
+message ProtocolMessage {
+  MessageType Type = 1;
+  enum MessageType {
+    NONE = 0;
+    PING = 16;
+    PONG = 17;
+    HELLO = 18;
+    BYE = 19;
+    POSITION_ROTATION = 21;
+  }
+
+  PingMessage Ping = 16;
+  message PingMessage { }
+
+  PongMessage Pong = 17;
+  message PongMessage { }
+
+  HelloMessage Hello = 18;
+  message HelloMessage {
+    bytes Id = 1;
+    string Name = 2;
+  }
+
+  ByeMessage Bye = 19;
+  message ByeMessage { }
+
+  PositionMessage Position = 20;
+  message PositionMessage {
+    float X = 1;
+    float Y = 2;
+    float Z = 3;
+  }
+
+  RotationMessage Rotation = 21;
+  message RotationMessage {
+    float X = 1;
+    float Y = 2;
+    float Z = 3;
+    float W = 4;
+  }
+}

@@ -2,8 +2,12 @@ module.exports = function(grunt) {
   grunt.initConfig({
     browserify: {
         main: {
-            src: ['src/*.ts'],
+            src: ['src/game/*.ts'],
             dest: 'dist/bundle.js',
+        },
+        main: {
+            src: ['src/worker/*.ts'],
+            dest: 'dist/worker.bundle.js',
         },
         options: {
             browserifyOptions: {
@@ -21,7 +25,8 @@ module.exports = function(grunt) {
     uglify: {
       main: {
         files: {
-          'dist/bundle.min.js': ['dist/bundle.js']
+          'dist/bundle.min.js': ['dist/bundle.js'],
+          'dist/worker.bundle.min.js': ['dist/worker.bundle.js'],
         }
       },
       options: {
@@ -34,6 +39,11 @@ module.exports = function(grunt) {
         files: {
           'index.html': 'src/index.html'
         }
+      }
+    },
+    exec: {
+      generateProto: {
+        command: 'pbjs -t static-module -w commonjs -o src/proto/webrealms.proto.js ../webrealms.proto && pbts  src/proto/webrealms.proto.js -o src/proto/webrealms.proto.d.ts',
       }
     },
     watch: {
@@ -59,7 +69,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-inject');
+  grunt.loadNpmTasks('grunt-exec');
   grunt.registerTask("default", ["build","watch"]);
-  grunt.registerTask("build", ["browserify","uglify","inject"]);
+  grunt.registerTask("build", ["exec:generateProto","browserify","uglify","inject"]);
   
 };

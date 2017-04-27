@@ -1,7 +1,7 @@
 import * as pixi from 'pixi.js';
-import { SocketConnection } from './SocketConnection'; 
+import { Client } from './client'; 
 
-var connection = new SocketConnection(window.document.location.href.replace("http","ws"));
+var connection = new Client();
 pixi.utils.skipHello();
 var renderer = new pixi.WebGLRenderer(800, 600);
 document.body.appendChild(renderer.view);

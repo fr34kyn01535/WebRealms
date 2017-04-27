@@ -1,3 +1,5 @@
+//go:generate protoc --go_out=proto/ webrealms.proto
+
 package main
 
 import (
@@ -5,44 +7,57 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/googollee/go-socket.io"
-	//"github.com/go-redis/redis"
+	"./proto"
+
+	"github.com/golang/protobuf/proto"
+	"github.com/gorilla/websocket"
 )
 
-func testHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "<div>%s</div>", "test")
-	server.BroadcastTo("chat", "ping", "test")
+var data []byte
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin:     func(r *http.Request) bool { return true },
 }
 
-var server *socketio.Server
+func handler(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		return
+	}
+	for {
+		_, _, err := conn.ReadMessage()
+		if err != nil {
+			return
+		}
+		fmt.Println("read done")
+		fmt.Println("write %s", data)
+		if err = conn.WriteMessage(websocket.BinaryMessage, data); err != nil {
+			fmt.Println("err %s", err)
+			return
+		}
+		fmt.Println("write done")
+	}
+}
 
 func main() {
-	var err error
-	server, err = socketio.NewServer(nil)
-	if err != nil {
+
+	msg := &webrealms.ProtocolMessage{
+		Type: webrealms.ProtocolMessage_HELLO,
+		Hello: &webrealms.ProtocolMessage_HelloMessage{
+			Id:   []byte{0, 1},
+			Name: "hello",
+		},
+	}
+
+	data, _ = proto.Marshal(msg)
+
+	fmt.Println("%s", data)
+
+	http.HandleFunc("/ws", handler)
+	http.Handle("/", http.FileServer(http.Dir("./www")))
+	if err := http.ListenAndServe(":8182", nil); err != nil {
 		log.Fatal(err)
 	}
-	server.On("connection", func(so socketio.Socket) {
-		log.Println("on connection")
-		so.Join("chat")
-
-		so.On("disconnection", func() {
-			log.Println("on disconnect")
-		})
-		so.On("pong", func(msg string) {
-			log.Println("client ponged back")
-			so.Emit("ping", "hi")
-		})
-		so.Emit("ping", "hi")
-	})
-	server.On("error", func(so socketio.Socket, err error) {
-		log.Println("error:", err)
-	})
-	http.Handle("/socket.io/", server)
-	http.Handle("/", http.FileServer(http.Dir("./www")))
-
-	http.HandleFunc("/test/", testHandler)
-
-	log.Println("Serving at localhost:8182...")
-	log.Fatal(http.ListenAndServe(":8182", nil))
 }
