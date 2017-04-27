@@ -22,27 +22,42 @@ var upgrader = websocket.Upgrader{
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", 405)
 		return
 	}
+	upgrader := websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool { return true }, // FIXME : Remove
+	}
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		http.Error(w, "Error Upgrading to websockets", 400)
+		return
+	}
+
 	for {
-		_, _, err := conn.ReadMessage()
+		_, p, err := ws.ReadMessage()
 		if err != nil {
+			fmt.Println("err ", err)
 			return
 		}
-		fmt.Println("read done")
-		fmt.Println("write %s", data)
-		if err = conn.WriteMessage(websocket.BinaryMessage, data); err != nil {
-			fmt.Println("err %s", err)
+
+		message := &webrealms.ProtocolMessage{}
+		err = proto.Unmarshal(p, message)
+		if err != nil {
+			fmt.Println("err ", err)
 			return
 		}
-		fmt.Println("write done")
+
+		err = ws.WriteMessage(websocket.BinaryMessage, createHelloMessage())
+		if err != nil {
+			fmt.Println("err ", err)
+			return
+		}
 	}
 }
 
-func main() {
-
+func createHelloMessage() []byte {
 	msg := &webrealms.ProtocolMessage{
 		Type: webrealms.ProtocolMessage_HELLO,
 		Hello: &webrealms.ProtocolMessage_HelloMessage{
@@ -51,10 +66,14 @@ func main() {
 		},
 	}
 
-	data, _ = proto.Marshal(msg)
+	data, err := proto.Marshal(msg)
+	if err != nil {
+		fmt.Println("err ", err)
+	}
+	return data
+}
 
-	fmt.Println("%s", data)
-
+func main() {
 	http.HandleFunc("/ws", handler)
 	http.Handle("/", http.FileServer(http.Dir("./www")))
 	if err := http.ListenAndServe(":8182", nil); err != nil {

@@ -25,19 +25,19 @@ export class Client {
                 that.listeners.filter((listener)=>{ listener.topic == data.Type}).forEach((listener)=>{
                     listener.callback(data);
                 });
-                console.log("WORKER < ",data);
+                console.log("WORKER <",data);
             } else{
                 that.listeners.filter((listener)=>{ listener.topic == event.data[0]}).forEach((listener)=>{;
                     listener.callback(event.data[0],(event.data as Array<any>).splice(0,1));
                 });
-                console.log("WORKER < "+event.data[0]);
+                console.log("WORKER <",event.data[0]);
             }
         };
         this.send("connect");
     }
     
     private send(content: root.webrealms.ProtocolMessage$Properties | string){
-        console.log("WORKER > ",content);
+        console.log("WORKER >",content);
         if(typeof content == 'string'){
             this.worker.postMessage(content);
         }else{
