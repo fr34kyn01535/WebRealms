@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 
-	"./proto"
+	"./webrealms"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/websocket"
