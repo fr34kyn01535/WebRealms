@@ -2,6 +2,21 @@ import * as pixi from 'pixi.js';
 import { Client } from './client'; 
 
 var connection = new Client();
+
+connection.on("connected",function(data){
+    console.log("yes2");
+    connection.SendHello(new Uint8Array([1,2]),"HEy");
+});
+
+connection.on("disconnected",function(data){
+    console.log("yes3");
+});
+
+connection.on(connection.MessageType.HELLO,function(data){
+    console.log("yes");
+    connection.SendHello(new Uint8Array([1,2]),"HEy");
+});
+
 pixi.utils.skipHello();
 var renderer = new pixi.WebGLRenderer(800, 600);
 document.body.appendChild(renderer.view);
@@ -17,10 +32,9 @@ bunny.position.y = 300;
 bunny.scale.x = 2;
 bunny.scale.y = 2;
 bunny.interactive = true;
-console.log("test");
+
 bunny.on('pointerdown', function(){
-    console.log("clicked");
-    connection.emit("pong","test");
+    connection.SendPing();
 });
 container.addChild(bunny);  
  

@@ -1,11 +1,11 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     browserify: {
-        main: {
+        game: {
             src: ['src/game/*.ts'],
             dest: 'dist/bundle.js',
         },
-        main: {
+        worker: {
             src: ['src/worker/*.ts'],
             dest: 'dist/worker.bundle.js',
         },
@@ -48,7 +48,7 @@ module.exports = function(grunt) {
     },
     watch: {
       main: {
-        files: ['gruntfile.js', 'tsconfig.json','src/*'],
+        files: ['gruntfile.js', 'tsconfig.json','src/*','src/game/*','src/proto/*','src/worker/*'],
         tasks: ['build'],
         options: {
           spawn : true,
@@ -72,5 +72,4 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-exec');
   grunt.registerTask("default", ["build","watch"]);
   grunt.registerTask("build", ["exec:generateProto","browserify","uglify","inject"]);
-  
 };

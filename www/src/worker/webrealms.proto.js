@@ -397,7 +397,7 @@ $root.webrealms = (function() {
         })();
 
         ProtocolMessage.PingMessage = (function() {
-
+            let test = ProtocolMessage.MessageType[2];
             /**
              * Properties of a PingMessage.
              * @typedef webrealms.ProtocolMessage.PingMessage$Properties
