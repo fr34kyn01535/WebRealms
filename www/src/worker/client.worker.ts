@@ -27,7 +27,7 @@ class Client{
         
         socket.onmessage = function(event) {
             try {
-                let m = builder.decode(new Uint8Array(event.data));
+                let m = root.webrealms.ProtocolMessage.toObject(builder.decode(new Uint8Array(event.data)));
                 postMessage(["message",m]);
             } catch (e) {
                 if (e instanceof ProtoBuf.util.ProtocolError) {
@@ -41,14 +41,15 @@ class Client{
     }
 
     public onmessage(event) {
-        if(typeof event.data !== 'string'){
-            let content: root.webrealms.ProtocolMessage$Properties = event.data;
-            this.send(content);
+        switch(event.data[0]){
+            case "message":
+                let content: root.webrealms.ProtocolMessage = root.webrealms.ProtocolMessage.fromObject(event.data[1]);
+                this.send(content);
+            break;
         }
     };
 
-    private send(content: root.webrealms.ProtocolMessage$Properties){
-        let message = this.builder.create(content);
+    private send(message: root.webrealms.ProtocolMessage){
         let data = this.builder.encode(message).finish();
         this.socket.send(data);
     }

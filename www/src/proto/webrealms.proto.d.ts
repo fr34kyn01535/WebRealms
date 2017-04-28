@@ -9,10 +9,12 @@ export namespace webrealms {
 
     type ProtocolMessage$Properties = {
         Type?: webrealms.ProtocolMessage.MessageType;
+        Connect?: webrealms.ProtocolMessage.ConnectMessage$Properties;
+        Disconnect?: webrealms.ProtocolMessage.DisconnectMessage$Properties;
         Ping?: webrealms.ProtocolMessage.PingMessage$Properties;
         Pong?: webrealms.ProtocolMessage.PongMessage$Properties;
-        Hello?: webrealms.ProtocolMessage.HelloMessage$Properties;
-        Bye?: webrealms.ProtocolMessage.ByeMessage$Properties;
+        Spawn?: webrealms.ProtocolMessage.SpawnMessage$Properties;
+        Unspawn?: webrealms.ProtocolMessage.UnspawnMessage$Properties;
         Position?: webrealms.ProtocolMessage.PositionMessage$Properties;
         Rotation?: webrealms.ProtocolMessage.RotationMessage$Properties;
     };
@@ -40,6 +42,18 @@ export namespace webrealms {
         public Type: webrealms.ProtocolMessage.MessageType;
 
         /**
+         * ProtocolMessage Connect.
+         * @type {(webrealms.ProtocolMessage.ConnectMessage$Properties|null)}
+         */
+        public Connect: (webrealms.ProtocolMessage.ConnectMessage$Properties|null);
+
+        /**
+         * ProtocolMessage Disconnect.
+         * @type {(webrealms.ProtocolMessage.DisconnectMessage$Properties|null)}
+         */
+        public Disconnect: (webrealms.ProtocolMessage.DisconnectMessage$Properties|null);
+
+        /**
          * ProtocolMessage Ping.
          * @type {(webrealms.ProtocolMessage.PingMessage$Properties|null)}
          */
@@ -52,16 +66,16 @@ export namespace webrealms {
         public Pong: (webrealms.ProtocolMessage.PongMessage$Properties|null);
 
         /**
-         * ProtocolMessage Hello.
-         * @type {(webrealms.ProtocolMessage.HelloMessage$Properties|null)}
+         * ProtocolMessage Spawn.
+         * @type {(webrealms.ProtocolMessage.SpawnMessage$Properties|null)}
          */
-        public Hello: (webrealms.ProtocolMessage.HelloMessage$Properties|null);
+        public Spawn: (webrealms.ProtocolMessage.SpawnMessage$Properties|null);
 
         /**
-         * ProtocolMessage Bye.
-         * @type {(webrealms.ProtocolMessage.ByeMessage$Properties|null)}
+         * ProtocolMessage Unspawn.
+         * @type {(webrealms.ProtocolMessage.UnspawnMessage$Properties|null)}
          */
-        public Bye: (webrealms.ProtocolMessage.ByeMessage$Properties|null);
+        public Unspawn: (webrealms.ProtocolMessage.UnspawnMessage$Properties|null);
 
         /**
          * ProtocolMessage Position.
@@ -170,19 +184,257 @@ export namespace webrealms {
          * @memberof webrealms.ProtocolMessage
          * @enum {number}
          * @property {number} NONE=0 NONE value
+         * @property {number} CONNECT=14 CONNECT value
+         * @property {number} DISCONNECT=15 DISCONNECT value
          * @property {number} PING=16 PING value
          * @property {number} PONG=17 PONG value
-         * @property {number} HELLO=18 HELLO value
-         * @property {number} BYE=19 BYE value
-         * @property {number} POSITION_ROTATION=21 POSITION_ROTATION value
+         * @property {number} SPAWN=18 SPAWN value
+         * @property {number} UNSPAWN=19 UNSPAWN value
+         * @property {number} POSITION=20 POSITION value
+         * @property {number} ROTATION=21 ROTATION value
          */
         enum MessageType {
             NONE = 0,
+            CONNECT = 14,
+            DISCONNECT = 15,
             PING = 16,
             PONG = 17,
-            HELLO = 18,
-            BYE = 19,
-            POSITION_ROTATION = 21
+            SPAWN = 18,
+            UNSPAWN = 19,
+            POSITION = 20,
+            ROTATION = 21
+        }
+
+        type ConnectMessage$Properties = {
+            Username?: string;
+            Password?: string;
+            Session?: string;
+        };
+
+        /**
+         * Constructs a new ConnectMessage.
+         * @exports webrealms.ProtocolMessage.ConnectMessage
+         * @constructor
+         * @param {webrealms.ProtocolMessage.ConnectMessage$Properties=} [properties] Properties to set
+         */
+        class ConnectMessage {
+
+            /**
+             * Constructs a new ConnectMessage.
+             * @exports webrealms.ProtocolMessage.ConnectMessage
+             * @constructor
+             * @param {webrealms.ProtocolMessage.ConnectMessage$Properties=} [properties] Properties to set
+             */
+            constructor(properties?: webrealms.ProtocolMessage.ConnectMessage$Properties);
+
+            /**
+             * ConnectMessage Username.
+             * @type {string}
+             */
+            public Username: string;
+
+            /**
+             * ConnectMessage Password.
+             * @type {string}
+             */
+            public Password: string;
+
+            /**
+             * ConnectMessage Session.
+             * @type {string}
+             */
+            public Session: string;
+
+            /**
+             * Creates a new ConnectMessage instance using the specified properties.
+             * @param {webrealms.ProtocolMessage.ConnectMessage$Properties=} [properties] Properties to set
+             * @returns {webrealms.ProtocolMessage.ConnectMessage} ConnectMessage instance
+             */
+            public static create(properties?: webrealms.ProtocolMessage.ConnectMessage$Properties): webrealms.ProtocolMessage.ConnectMessage;
+
+            /**
+             * Encodes the specified ConnectMessage message. Does not implicitly {@link webrealms.ProtocolMessage.ConnectMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.ConnectMessage$Properties} message ConnectMessage message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            public static encode(message: webrealms.ProtocolMessage.ConnectMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ConnectMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.ConnectMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.ConnectMessage$Properties} message ConnectMessage message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            public static encodeDelimited(message: webrealms.ProtocolMessage.ConnectMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a ConnectMessage message from the specified reader or buffer.
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {webrealms.ProtocolMessage.ConnectMessage} ConnectMessage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): webrealms.ProtocolMessage.ConnectMessage;
+
+            /**
+             * Decodes a ConnectMessage message from the specified reader or buffer, length delimited.
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {webrealms.ProtocolMessage.ConnectMessage} ConnectMessage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): webrealms.ProtocolMessage.ConnectMessage;
+
+            /**
+             * Verifies a ConnectMessage message.
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {?string} `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): string;
+
+            /**
+             * Creates a ConnectMessage message from a plain object. Also converts values to their respective internal types.
+             * @param {Object.<string,*>} object Plain object
+             * @returns {webrealms.ProtocolMessage.ConnectMessage} ConnectMessage
+             */
+            public static fromObject(object: { [k: string]: any }): webrealms.ProtocolMessage.ConnectMessage;
+
+            /**
+             * Creates a ConnectMessage message from a plain object. Also converts values to their respective internal types.
+             * This is an alias of {@link webrealms.ProtocolMessage.ConnectMessage.fromObject}.
+             * @function
+             * @param {Object.<string,*>} object Plain object
+             * @returns {webrealms.ProtocolMessage.ConnectMessage} ConnectMessage
+             */
+            public static from(object: { [k: string]: any }): webrealms.ProtocolMessage.ConnectMessage;
+
+            /**
+             * Creates a plain object from a ConnectMessage message. Also converts values to other types if specified.
+             * @param {webrealms.ProtocolMessage.ConnectMessage} message ConnectMessage
+             * @param {$protobuf.ConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            public static toObject(message: webrealms.ProtocolMessage.ConnectMessage, options?: $protobuf.ConversionOptions): { [k: string]: any };
+
+            /**
+             * Creates a plain object from this ConnectMessage message. Also converts values to other types if specified.
+             * @param {$protobuf.ConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            public toObject(options?: $protobuf.ConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ConnectMessage to JSON.
+             * @returns {Object.<string,*>} JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
+
+        type DisconnectMessage$Properties = {};
+
+        /**
+         * Constructs a new DisconnectMessage.
+         * @exports webrealms.ProtocolMessage.DisconnectMessage
+         * @constructor
+         * @param {webrealms.ProtocolMessage.DisconnectMessage$Properties=} [properties] Properties to set
+         */
+        class DisconnectMessage {
+
+            /**
+             * Constructs a new DisconnectMessage.
+             * @exports webrealms.ProtocolMessage.DisconnectMessage
+             * @constructor
+             * @param {webrealms.ProtocolMessage.DisconnectMessage$Properties=} [properties] Properties to set
+             */
+            constructor(properties?: webrealms.ProtocolMessage.DisconnectMessage$Properties);
+
+            /**
+             * Creates a new DisconnectMessage instance using the specified properties.
+             * @param {webrealms.ProtocolMessage.DisconnectMessage$Properties=} [properties] Properties to set
+             * @returns {webrealms.ProtocolMessage.DisconnectMessage} DisconnectMessage instance
+             */
+            public static create(properties?: webrealms.ProtocolMessage.DisconnectMessage$Properties): webrealms.ProtocolMessage.DisconnectMessage;
+
+            /**
+             * Encodes the specified DisconnectMessage message. Does not implicitly {@link webrealms.ProtocolMessage.DisconnectMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.DisconnectMessage$Properties} message DisconnectMessage message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            public static encode(message: webrealms.ProtocolMessage.DisconnectMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified DisconnectMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.DisconnectMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.DisconnectMessage$Properties} message DisconnectMessage message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            public static encodeDelimited(message: webrealms.ProtocolMessage.DisconnectMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a DisconnectMessage message from the specified reader or buffer.
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {webrealms.ProtocolMessage.DisconnectMessage} DisconnectMessage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): webrealms.ProtocolMessage.DisconnectMessage;
+
+            /**
+             * Decodes a DisconnectMessage message from the specified reader or buffer, length delimited.
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {webrealms.ProtocolMessage.DisconnectMessage} DisconnectMessage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): webrealms.ProtocolMessage.DisconnectMessage;
+
+            /**
+             * Verifies a DisconnectMessage message.
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {?string} `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): string;
+
+            /**
+             * Creates a DisconnectMessage message from a plain object. Also converts values to their respective internal types.
+             * @param {Object.<string,*>} object Plain object
+             * @returns {webrealms.ProtocolMessage.DisconnectMessage} DisconnectMessage
+             */
+            public static fromObject(object: { [k: string]: any }): webrealms.ProtocolMessage.DisconnectMessage;
+
+            /**
+             * Creates a DisconnectMessage message from a plain object. Also converts values to their respective internal types.
+             * This is an alias of {@link webrealms.ProtocolMessage.DisconnectMessage.fromObject}.
+             * @function
+             * @param {Object.<string,*>} object Plain object
+             * @returns {webrealms.ProtocolMessage.DisconnectMessage} DisconnectMessage
+             */
+            public static from(object: { [k: string]: any }): webrealms.ProtocolMessage.DisconnectMessage;
+
+            /**
+             * Creates a plain object from a DisconnectMessage message. Also converts values to other types if specified.
+             * @param {webrealms.ProtocolMessage.DisconnectMessage} message DisconnectMessage
+             * @param {$protobuf.ConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            public static toObject(message: webrealms.ProtocolMessage.DisconnectMessage, options?: $protobuf.ConversionOptions): { [k: string]: any };
+
+            /**
+             * Creates a plain object from this DisconnectMessage message. Also converts values to other types if specified.
+             * @param {$protobuf.ConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            public toObject(options?: $protobuf.ConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this DisconnectMessage to JSON.
+             * @returns {Object.<string,*>} JSON object
+             */
+            public toJSON(): { [k: string]: any };
         }
 
         type PingMessage$Properties = {};
@@ -395,226 +647,219 @@ export namespace webrealms {
             public toJSON(): { [k: string]: any };
         }
 
-        type HelloMessage$Properties = {
-            Id?: Uint8Array;
+        type SpawnMessage$Properties = {
             Name?: string;
         };
 
         /**
-         * Constructs a new HelloMessage.
-         * @exports webrealms.ProtocolMessage.HelloMessage
+         * Constructs a new SpawnMessage.
+         * @exports webrealms.ProtocolMessage.SpawnMessage
          * @constructor
-         * @param {webrealms.ProtocolMessage.HelloMessage$Properties=} [properties] Properties to set
+         * @param {webrealms.ProtocolMessage.SpawnMessage$Properties=} [properties] Properties to set
          */
-        class HelloMessage {
+        class SpawnMessage {
 
             /**
-             * Constructs a new HelloMessage.
-             * @exports webrealms.ProtocolMessage.HelloMessage
+             * Constructs a new SpawnMessage.
+             * @exports webrealms.ProtocolMessage.SpawnMessage
              * @constructor
-             * @param {webrealms.ProtocolMessage.HelloMessage$Properties=} [properties] Properties to set
+             * @param {webrealms.ProtocolMessage.SpawnMessage$Properties=} [properties] Properties to set
              */
-            constructor(properties?: webrealms.ProtocolMessage.HelloMessage$Properties);
+            constructor(properties?: webrealms.ProtocolMessage.SpawnMessage$Properties);
 
             /**
-             * HelloMessage Id.
-             * @type {Uint8Array}
-             */
-            public Id: Uint8Array;
-
-            /**
-             * HelloMessage Name.
+             * SpawnMessage Name.
              * @type {string}
              */
             public Name: string;
 
             /**
-             * Creates a new HelloMessage instance using the specified properties.
-             * @param {webrealms.ProtocolMessage.HelloMessage$Properties=} [properties] Properties to set
-             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage instance
+             * Creates a new SpawnMessage instance using the specified properties.
+             * @param {webrealms.ProtocolMessage.SpawnMessage$Properties=} [properties] Properties to set
+             * @returns {webrealms.ProtocolMessage.SpawnMessage} SpawnMessage instance
              */
-            public static create(properties?: webrealms.ProtocolMessage.HelloMessage$Properties): webrealms.ProtocolMessage.HelloMessage;
+            public static create(properties?: webrealms.ProtocolMessage.SpawnMessage$Properties): webrealms.ProtocolMessage.SpawnMessage;
 
             /**
-             * Encodes the specified HelloMessage message. Does not implicitly {@link webrealms.ProtocolMessage.HelloMessage.verify|verify} messages.
-             * @param {webrealms.ProtocolMessage.HelloMessage$Properties} message HelloMessage message or plain object to encode
+             * Encodes the specified SpawnMessage message. Does not implicitly {@link webrealms.ProtocolMessage.SpawnMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.SpawnMessage$Properties} message SpawnMessage message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            public static encode(message: webrealms.ProtocolMessage.HelloMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encode(message: webrealms.ProtocolMessage.SpawnMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * Encodes the specified HelloMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.HelloMessage.verify|verify} messages.
-             * @param {webrealms.ProtocolMessage.HelloMessage$Properties} message HelloMessage message or plain object to encode
+             * Encodes the specified SpawnMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.SpawnMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.SpawnMessage$Properties} message SpawnMessage message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            public static encodeDelimited(message: webrealms.ProtocolMessage.HelloMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: webrealms.ProtocolMessage.SpawnMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * Decodes a HelloMessage message from the specified reader or buffer.
+             * Decodes a SpawnMessage message from the specified reader or buffer.
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             * @returns {webrealms.ProtocolMessage.SpawnMessage} SpawnMessage
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): webrealms.ProtocolMessage.HelloMessage;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): webrealms.ProtocolMessage.SpawnMessage;
 
             /**
-             * Decodes a HelloMessage message from the specified reader or buffer, length delimited.
+             * Decodes a SpawnMessage message from the specified reader or buffer, length delimited.
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             * @returns {webrealms.ProtocolMessage.SpawnMessage} SpawnMessage
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): webrealms.ProtocolMessage.HelloMessage;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): webrealms.ProtocolMessage.SpawnMessage;
 
             /**
-             * Verifies a HelloMessage message.
+             * Verifies a SpawnMessage message.
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {?string} `null` if valid, otherwise the reason why it is not
              */
             public static verify(message: { [k: string]: any }): string;
 
             /**
-             * Creates a HelloMessage message from a plain object. Also converts values to their respective internal types.
+             * Creates a SpawnMessage message from a plain object. Also converts values to their respective internal types.
              * @param {Object.<string,*>} object Plain object
-             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             * @returns {webrealms.ProtocolMessage.SpawnMessage} SpawnMessage
              */
-            public static fromObject(object: { [k: string]: any }): webrealms.ProtocolMessage.HelloMessage;
+            public static fromObject(object: { [k: string]: any }): webrealms.ProtocolMessage.SpawnMessage;
 
             /**
-             * Creates a HelloMessage message from a plain object. Also converts values to their respective internal types.
-             * This is an alias of {@link webrealms.ProtocolMessage.HelloMessage.fromObject}.
+             * Creates a SpawnMessage message from a plain object. Also converts values to their respective internal types.
+             * This is an alias of {@link webrealms.ProtocolMessage.SpawnMessage.fromObject}.
              * @function
              * @param {Object.<string,*>} object Plain object
-             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             * @returns {webrealms.ProtocolMessage.SpawnMessage} SpawnMessage
              */
-            public static from(object: { [k: string]: any }): webrealms.ProtocolMessage.HelloMessage;
+            public static from(object: { [k: string]: any }): webrealms.ProtocolMessage.SpawnMessage;
 
             /**
-             * Creates a plain object from a HelloMessage message. Also converts values to other types if specified.
-             * @param {webrealms.ProtocolMessage.HelloMessage} message HelloMessage
+             * Creates a plain object from a SpawnMessage message. Also converts values to other types if specified.
+             * @param {webrealms.ProtocolMessage.SpawnMessage} message SpawnMessage
              * @param {$protobuf.ConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            public static toObject(message: webrealms.ProtocolMessage.HelloMessage, options?: $protobuf.ConversionOptions): { [k: string]: any };
+            public static toObject(message: webrealms.ProtocolMessage.SpawnMessage, options?: $protobuf.ConversionOptions): { [k: string]: any };
 
             /**
-             * Creates a plain object from this HelloMessage message. Also converts values to other types if specified.
+             * Creates a plain object from this SpawnMessage message. Also converts values to other types if specified.
              * @param {$protobuf.ConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
             public toObject(options?: $protobuf.ConversionOptions): { [k: string]: any };
 
             /**
-             * Converts this HelloMessage to JSON.
+             * Converts this SpawnMessage to JSON.
              * @returns {Object.<string,*>} JSON object
              */
             public toJSON(): { [k: string]: any };
         }
 
-        type ByeMessage$Properties = {};
+        type UnspawnMessage$Properties = {};
 
         /**
-         * Constructs a new ByeMessage.
-         * @exports webrealms.ProtocolMessage.ByeMessage
+         * Constructs a new UnspawnMessage.
+         * @exports webrealms.ProtocolMessage.UnspawnMessage
          * @constructor
-         * @param {webrealms.ProtocolMessage.ByeMessage$Properties=} [properties] Properties to set
+         * @param {webrealms.ProtocolMessage.UnspawnMessage$Properties=} [properties] Properties to set
          */
-        class ByeMessage {
+        class UnspawnMessage {
 
             /**
-             * Constructs a new ByeMessage.
-             * @exports webrealms.ProtocolMessage.ByeMessage
+             * Constructs a new UnspawnMessage.
+             * @exports webrealms.ProtocolMessage.UnspawnMessage
              * @constructor
-             * @param {webrealms.ProtocolMessage.ByeMessage$Properties=} [properties] Properties to set
+             * @param {webrealms.ProtocolMessage.UnspawnMessage$Properties=} [properties] Properties to set
              */
-            constructor(properties?: webrealms.ProtocolMessage.ByeMessage$Properties);
+            constructor(properties?: webrealms.ProtocolMessage.UnspawnMessage$Properties);
 
             /**
-             * Creates a new ByeMessage instance using the specified properties.
-             * @param {webrealms.ProtocolMessage.ByeMessage$Properties=} [properties] Properties to set
-             * @returns {webrealms.ProtocolMessage.ByeMessage} ByeMessage instance
+             * Creates a new UnspawnMessage instance using the specified properties.
+             * @param {webrealms.ProtocolMessage.UnspawnMessage$Properties=} [properties] Properties to set
+             * @returns {webrealms.ProtocolMessage.UnspawnMessage} UnspawnMessage instance
              */
-            public static create(properties?: webrealms.ProtocolMessage.ByeMessage$Properties): webrealms.ProtocolMessage.ByeMessage;
+            public static create(properties?: webrealms.ProtocolMessage.UnspawnMessage$Properties): webrealms.ProtocolMessage.UnspawnMessage;
 
             /**
-             * Encodes the specified ByeMessage message. Does not implicitly {@link webrealms.ProtocolMessage.ByeMessage.verify|verify} messages.
-             * @param {webrealms.ProtocolMessage.ByeMessage$Properties} message ByeMessage message or plain object to encode
+             * Encodes the specified UnspawnMessage message. Does not implicitly {@link webrealms.ProtocolMessage.UnspawnMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.UnspawnMessage$Properties} message UnspawnMessage message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            public static encode(message: webrealms.ProtocolMessage.ByeMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encode(message: webrealms.ProtocolMessage.UnspawnMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * Encodes the specified ByeMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.ByeMessage.verify|verify} messages.
-             * @param {webrealms.ProtocolMessage.ByeMessage$Properties} message ByeMessage message or plain object to encode
+             * Encodes the specified UnspawnMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.UnspawnMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.UnspawnMessage$Properties} message UnspawnMessage message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            public static encodeDelimited(message: webrealms.ProtocolMessage.ByeMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: webrealms.ProtocolMessage.UnspawnMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * Decodes a ByeMessage message from the specified reader or buffer.
+             * Decodes an UnspawnMessage message from the specified reader or buffer.
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {webrealms.ProtocolMessage.ByeMessage} ByeMessage
+             * @returns {webrealms.ProtocolMessage.UnspawnMessage} UnspawnMessage
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): webrealms.ProtocolMessage.ByeMessage;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): webrealms.ProtocolMessage.UnspawnMessage;
 
             /**
-             * Decodes a ByeMessage message from the specified reader or buffer, length delimited.
+             * Decodes an UnspawnMessage message from the specified reader or buffer, length delimited.
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {webrealms.ProtocolMessage.ByeMessage} ByeMessage
+             * @returns {webrealms.ProtocolMessage.UnspawnMessage} UnspawnMessage
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): webrealms.ProtocolMessage.ByeMessage;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): webrealms.ProtocolMessage.UnspawnMessage;
 
             /**
-             * Verifies a ByeMessage message.
+             * Verifies an UnspawnMessage message.
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {?string} `null` if valid, otherwise the reason why it is not
              */
             public static verify(message: { [k: string]: any }): string;
 
             /**
-             * Creates a ByeMessage message from a plain object. Also converts values to their respective internal types.
+             * Creates an UnspawnMessage message from a plain object. Also converts values to their respective internal types.
              * @param {Object.<string,*>} object Plain object
-             * @returns {webrealms.ProtocolMessage.ByeMessage} ByeMessage
+             * @returns {webrealms.ProtocolMessage.UnspawnMessage} UnspawnMessage
              */
-            public static fromObject(object: { [k: string]: any }): webrealms.ProtocolMessage.ByeMessage;
+            public static fromObject(object: { [k: string]: any }): webrealms.ProtocolMessage.UnspawnMessage;
 
             /**
-             * Creates a ByeMessage message from a plain object. Also converts values to their respective internal types.
-             * This is an alias of {@link webrealms.ProtocolMessage.ByeMessage.fromObject}.
+             * Creates an UnspawnMessage message from a plain object. Also converts values to their respective internal types.
+             * This is an alias of {@link webrealms.ProtocolMessage.UnspawnMessage.fromObject}.
              * @function
              * @param {Object.<string,*>} object Plain object
-             * @returns {webrealms.ProtocolMessage.ByeMessage} ByeMessage
+             * @returns {webrealms.ProtocolMessage.UnspawnMessage} UnspawnMessage
              */
-            public static from(object: { [k: string]: any }): webrealms.ProtocolMessage.ByeMessage;
+            public static from(object: { [k: string]: any }): webrealms.ProtocolMessage.UnspawnMessage;
 
             /**
-             * Creates a plain object from a ByeMessage message. Also converts values to other types if specified.
-             * @param {webrealms.ProtocolMessage.ByeMessage} message ByeMessage
+             * Creates a plain object from an UnspawnMessage message. Also converts values to other types if specified.
+             * @param {webrealms.ProtocolMessage.UnspawnMessage} message UnspawnMessage
              * @param {$protobuf.ConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            public static toObject(message: webrealms.ProtocolMessage.ByeMessage, options?: $protobuf.ConversionOptions): { [k: string]: any };
+            public static toObject(message: webrealms.ProtocolMessage.UnspawnMessage, options?: $protobuf.ConversionOptions): { [k: string]: any };
 
             /**
-             * Creates a plain object from this ByeMessage message. Also converts values to other types if specified.
+             * Creates a plain object from this UnspawnMessage message. Also converts values to other types if specified.
              * @param {$protobuf.ConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
             public toObject(options?: $protobuf.ConversionOptions): { [k: string]: any };
 
             /**
-             * Converts this ByeMessage to JSON.
+             * Converts this UnspawnMessage to JSON.
              * @returns {Object.<string,*>} JSON object
              */
             public toJSON(): { [k: string]: any };

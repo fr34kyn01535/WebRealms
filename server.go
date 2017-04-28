@@ -1,4 +1,4 @@
-//go:generate protoc --go_out=proto/ webrealms.proto
+//go:generate protoc --go_out=webrealms/ webrealms.proto
 
 package main
 
@@ -27,14 +27,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	upgrader := websocket.Upgrader{
-		CheckOrigin: func(r *http.Request) bool { return true }, // FIXME : Remove
+		CheckOrigin: func(r *http.Request) bool { return true },
 	}
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		http.Error(w, "Error Upgrading to websockets", 400)
 		return
 	}
-
 	for {
 		_, p, err := ws.ReadMessage()
 		if err != nil {
@@ -49,19 +48,25 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = ws.WriteMessage(websocket.BinaryMessage, createHelloMessage())
-		if err != nil {
-			fmt.Println("err ", err)
-			return
+		fmt.Println("Received message of type: ", webrealms.ProtocolMessage_MessageType_name[int32(message.Type)])
+
+		switch message.Type {
+		case webrealms.ProtocolMessage_CONNECT:
+			fmt.Println(message.Connect.Username)
+			err = ws.WriteMessage(websocket.BinaryMessage, createSpawnMessage())
+			if err != nil {
+				fmt.Println("err ", err)
+				return
+			}
 		}
+
 	}
 }
 
-func createHelloMessage() []byte {
+func createSpawnMessage() []byte {
 	msg := &webrealms.ProtocolMessage{
-		Type: webrealms.ProtocolMessage_HELLO,
-		Hello: &webrealms.ProtocolMessage_HelloMessage{
-			Id:   []byte{0, 1},
+		Type: webrealms.ProtocolMessage_SPAWN,
+		Spawn: &webrealms.ProtocolMessage_SpawnMessage{
 			Name: "hello",
 		},
 	}

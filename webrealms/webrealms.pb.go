@@ -31,29 +31,38 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 type ProtocolMessage_MessageType int32
 
 const (
-	ProtocolMessage_NONE              ProtocolMessage_MessageType = 0
-	ProtocolMessage_PING              ProtocolMessage_MessageType = 16
-	ProtocolMessage_PONG              ProtocolMessage_MessageType = 17
-	ProtocolMessage_HELLO             ProtocolMessage_MessageType = 18
-	ProtocolMessage_BYE               ProtocolMessage_MessageType = 19
-	ProtocolMessage_POSITION_ROTATION ProtocolMessage_MessageType = 21
+	ProtocolMessage_NONE       ProtocolMessage_MessageType = 0
+	ProtocolMessage_CONNECT    ProtocolMessage_MessageType = 14
+	ProtocolMessage_DISCONNECT ProtocolMessage_MessageType = 15
+	ProtocolMessage_PING       ProtocolMessage_MessageType = 16
+	ProtocolMessage_PONG       ProtocolMessage_MessageType = 17
+	ProtocolMessage_SPAWN      ProtocolMessage_MessageType = 18
+	ProtocolMessage_UNSPAWN    ProtocolMessage_MessageType = 19
+	ProtocolMessage_POSITION   ProtocolMessage_MessageType = 20
+	ProtocolMessage_ROTATION   ProtocolMessage_MessageType = 21
 )
 
 var ProtocolMessage_MessageType_name = map[int32]string{
 	0:  "NONE",
+	14: "CONNECT",
+	15: "DISCONNECT",
 	16: "PING",
 	17: "PONG",
-	18: "HELLO",
-	19: "BYE",
-	21: "POSITION_ROTATION",
+	18: "SPAWN",
+	19: "UNSPAWN",
+	20: "POSITION",
+	21: "ROTATION",
 }
 var ProtocolMessage_MessageType_value = map[string]int32{
-	"NONE":              0,
-	"PING":              16,
-	"PONG":              17,
-	"HELLO":             18,
-	"BYE":               19,
-	"POSITION_ROTATION": 21,
+	"NONE":       0,
+	"CONNECT":    14,
+	"DISCONNECT": 15,
+	"PING":       16,
+	"PONG":       17,
+	"SPAWN":      18,
+	"UNSPAWN":    19,
+	"POSITION":   20,
+	"ROTATION":   21,
 }
 
 func (x ProtocolMessage_MessageType) String() string {
@@ -64,13 +73,15 @@ func (ProtocolMessage_MessageType) EnumDescriptor() ([]byte, []int) {
 }
 
 type ProtocolMessage struct {
-	Type     ProtocolMessage_MessageType      `protobuf:"varint,1,opt,name=Type,json=type,enum=webrealms.ProtocolMessage_MessageType" json:"Type,omitempty"`
-	Ping     *ProtocolMessage_PingMessage     `protobuf:"bytes,16,opt,name=Ping,json=ping" json:"Ping,omitempty"`
-	Pong     *ProtocolMessage_PongMessage     `protobuf:"bytes,17,opt,name=Pong,json=pong" json:"Pong,omitempty"`
-	Hello    *ProtocolMessage_HelloMessage    `protobuf:"bytes,18,opt,name=Hello,json=hello" json:"Hello,omitempty"`
-	Bye      *ProtocolMessage_ByeMessage      `protobuf:"bytes,19,opt,name=Bye,json=bye" json:"Bye,omitempty"`
-	Position *ProtocolMessage_PositionMessage `protobuf:"bytes,20,opt,name=Position,json=position" json:"Position,omitempty"`
-	Rotation *ProtocolMessage_RotationMessage `protobuf:"bytes,21,opt,name=Rotation,json=rotation" json:"Rotation,omitempty"`
+	Type       ProtocolMessage_MessageType        `protobuf:"varint,1,opt,name=Type,json=type,enum=webrealms.ProtocolMessage_MessageType" json:"Type,omitempty"`
+	Connect    *ProtocolMessage_ConnectMessage    `protobuf:"bytes,14,opt,name=Connect,json=connect" json:"Connect,omitempty"`
+	Disconnect *ProtocolMessage_DisconnectMessage `protobuf:"bytes,15,opt,name=Disconnect,json=disconnect" json:"Disconnect,omitempty"`
+	Ping       *ProtocolMessage_PingMessage       `protobuf:"bytes,16,opt,name=Ping,json=ping" json:"Ping,omitempty"`
+	Pong       *ProtocolMessage_PongMessage       `protobuf:"bytes,17,opt,name=Pong,json=pong" json:"Pong,omitempty"`
+	Spawn      *ProtocolMessage_SpawnMessage      `protobuf:"bytes,18,opt,name=Spawn,json=spawn" json:"Spawn,omitempty"`
+	Unspawn    *ProtocolMessage_UnspawnMessage    `protobuf:"bytes,19,opt,name=Unspawn,json=unspawn" json:"Unspawn,omitempty"`
+	Position   *ProtocolMessage_PositionMessage   `protobuf:"bytes,20,opt,name=Position,json=position" json:"Position,omitempty"`
+	Rotation   *ProtocolMessage_RotationMessage   `protobuf:"bytes,21,opt,name=Rotation,json=rotation" json:"Rotation,omitempty"`
 }
 
 func (m *ProtocolMessage) Reset()                    { *m = ProtocolMessage{} }
@@ -83,6 +94,20 @@ func (m *ProtocolMessage) GetType() ProtocolMessage_MessageType {
 		return m.Type
 	}
 	return ProtocolMessage_NONE
+}
+
+func (m *ProtocolMessage) GetConnect() *ProtocolMessage_ConnectMessage {
+	if m != nil {
+		return m.Connect
+	}
+	return nil
+}
+
+func (m *ProtocolMessage) GetDisconnect() *ProtocolMessage_DisconnectMessage {
+	if m != nil {
+		return m.Disconnect
+	}
+	return nil
 }
 
 func (m *ProtocolMessage) GetPing() *ProtocolMessage_PingMessage {
@@ -99,16 +124,16 @@ func (m *ProtocolMessage) GetPong() *ProtocolMessage_PongMessage {
 	return nil
 }
 
-func (m *ProtocolMessage) GetHello() *ProtocolMessage_HelloMessage {
+func (m *ProtocolMessage) GetSpawn() *ProtocolMessage_SpawnMessage {
 	if m != nil {
-		return m.Hello
+		return m.Spawn
 	}
 	return nil
 }
 
-func (m *ProtocolMessage) GetBye() *ProtocolMessage_ByeMessage {
+func (m *ProtocolMessage) GetUnspawn() *ProtocolMessage_UnspawnMessage {
 	if m != nil {
-		return m.Bye
+		return m.Unspawn
 	}
 	return nil
 }
@@ -127,13 +152,57 @@ func (m *ProtocolMessage) GetRotation() *ProtocolMessage_RotationMessage {
 	return nil
 }
 
+type ProtocolMessage_ConnectMessage struct {
+	Username string `protobuf:"bytes,1,opt,name=Username,json=username" json:"Username,omitempty"`
+	Password string `protobuf:"bytes,2,opt,name=Password,json=password" json:"Password,omitempty"`
+	Session  string `protobuf:"bytes,3,opt,name=Session,json=session" json:"Session,omitempty"`
+}
+
+func (m *ProtocolMessage_ConnectMessage) Reset()         { *m = ProtocolMessage_ConnectMessage{} }
+func (m *ProtocolMessage_ConnectMessage) String() string { return proto.CompactTextString(m) }
+func (*ProtocolMessage_ConnectMessage) ProtoMessage()    {}
+func (*ProtocolMessage_ConnectMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor0, []int{0, 0}
+}
+
+func (m *ProtocolMessage_ConnectMessage) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
+func (m *ProtocolMessage_ConnectMessage) GetPassword() string {
+	if m != nil {
+		return m.Password
+	}
+	return ""
+}
+
+func (m *ProtocolMessage_ConnectMessage) GetSession() string {
+	if m != nil {
+		return m.Session
+	}
+	return ""
+}
+
+type ProtocolMessage_DisconnectMessage struct {
+}
+
+func (m *ProtocolMessage_DisconnectMessage) Reset()         { *m = ProtocolMessage_DisconnectMessage{} }
+func (m *ProtocolMessage_DisconnectMessage) String() string { return proto.CompactTextString(m) }
+func (*ProtocolMessage_DisconnectMessage) ProtoMessage()    {}
+func (*ProtocolMessage_DisconnectMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor0, []int{0, 1}
+}
+
 type ProtocolMessage_PingMessage struct {
 }
 
 func (m *ProtocolMessage_PingMessage) Reset()                    { *m = ProtocolMessage_PingMessage{} }
 func (m *ProtocolMessage_PingMessage) String() string            { return proto.CompactTextString(m) }
 func (*ProtocolMessage_PingMessage) ProtoMessage()               {}
-func (*ProtocolMessage_PingMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 0} }
+func (*ProtocolMessage_PingMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 2} }
 
 type ProtocolMessage_PongMessage struct {
 }
@@ -141,39 +210,33 @@ type ProtocolMessage_PongMessage struct {
 func (m *ProtocolMessage_PongMessage) Reset()                    { *m = ProtocolMessage_PongMessage{} }
 func (m *ProtocolMessage_PongMessage) String() string            { return proto.CompactTextString(m) }
 func (*ProtocolMessage_PongMessage) ProtoMessage()               {}
-func (*ProtocolMessage_PongMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 1} }
+func (*ProtocolMessage_PongMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 3} }
 
-type ProtocolMessage_HelloMessage struct {
-	Id   []byte `protobuf:"bytes,1,opt,name=Id,json=id,proto3" json:"Id,omitempty"`
-	Name string `protobuf:"bytes,2,opt,name=Name,json=name" json:"Name,omitempty"`
+type ProtocolMessage_SpawnMessage struct {
+	Name string `protobuf:"bytes,1,opt,name=Name,json=name" json:"Name,omitempty"`
 }
 
-func (m *ProtocolMessage_HelloMessage) Reset()                    { *m = ProtocolMessage_HelloMessage{} }
-func (m *ProtocolMessage_HelloMessage) String() string            { return proto.CompactTextString(m) }
-func (*ProtocolMessage_HelloMessage) ProtoMessage()               {}
-func (*ProtocolMessage_HelloMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 2} }
+func (m *ProtocolMessage_SpawnMessage) Reset()                    { *m = ProtocolMessage_SpawnMessage{} }
+func (m *ProtocolMessage_SpawnMessage) String() string            { return proto.CompactTextString(m) }
+func (*ProtocolMessage_SpawnMessage) ProtoMessage()               {}
+func (*ProtocolMessage_SpawnMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 4} }
 
-func (m *ProtocolMessage_HelloMessage) GetId() []byte {
-	if m != nil {
-		return m.Id
-	}
-	return nil
-}
-
-func (m *ProtocolMessage_HelloMessage) GetName() string {
+func (m *ProtocolMessage_SpawnMessage) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-type ProtocolMessage_ByeMessage struct {
+type ProtocolMessage_UnspawnMessage struct {
 }
 
-func (m *ProtocolMessage_ByeMessage) Reset()                    { *m = ProtocolMessage_ByeMessage{} }
-func (m *ProtocolMessage_ByeMessage) String() string            { return proto.CompactTextString(m) }
-func (*ProtocolMessage_ByeMessage) ProtoMessage()               {}
-func (*ProtocolMessage_ByeMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 3} }
+func (m *ProtocolMessage_UnspawnMessage) Reset()         { *m = ProtocolMessage_UnspawnMessage{} }
+func (m *ProtocolMessage_UnspawnMessage) String() string { return proto.CompactTextString(m) }
+func (*ProtocolMessage_UnspawnMessage) ProtoMessage()    {}
+func (*ProtocolMessage_UnspawnMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor0, []int{0, 5}
+}
 
 type ProtocolMessage_PositionMessage struct {
 	X float32 `protobuf:"fixed32,1,opt,name=X,json=x" json:"X,omitempty"`
@@ -185,7 +248,7 @@ func (m *ProtocolMessage_PositionMessage) Reset()         { *m = ProtocolMessage
 func (m *ProtocolMessage_PositionMessage) String() string { return proto.CompactTextString(m) }
 func (*ProtocolMessage_PositionMessage) ProtoMessage()    {}
 func (*ProtocolMessage_PositionMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor0, []int{0, 4}
+	return fileDescriptor0, []int{0, 6}
 }
 
 func (m *ProtocolMessage_PositionMessage) GetX() float32 {
@@ -220,7 +283,7 @@ func (m *ProtocolMessage_RotationMessage) Reset()         { *m = ProtocolMessage
 func (m *ProtocolMessage_RotationMessage) String() string { return proto.CompactTextString(m) }
 func (*ProtocolMessage_RotationMessage) ProtoMessage()    {}
 func (*ProtocolMessage_RotationMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor0, []int{0, 5}
+	return fileDescriptor0, []int{0, 7}
 }
 
 func (m *ProtocolMessage_RotationMessage) GetX() float32 {
@@ -253,10 +316,12 @@ func (m *ProtocolMessage_RotationMessage) GetW() float32 {
 
 func init() {
 	proto.RegisterType((*ProtocolMessage)(nil), "webrealms.ProtocolMessage")
+	proto.RegisterType((*ProtocolMessage_ConnectMessage)(nil), "webrealms.ProtocolMessage.ConnectMessage")
+	proto.RegisterType((*ProtocolMessage_DisconnectMessage)(nil), "webrealms.ProtocolMessage.DisconnectMessage")
 	proto.RegisterType((*ProtocolMessage_PingMessage)(nil), "webrealms.ProtocolMessage.PingMessage")
 	proto.RegisterType((*ProtocolMessage_PongMessage)(nil), "webrealms.ProtocolMessage.PongMessage")
-	proto.RegisterType((*ProtocolMessage_HelloMessage)(nil), "webrealms.ProtocolMessage.HelloMessage")
-	proto.RegisterType((*ProtocolMessage_ByeMessage)(nil), "webrealms.ProtocolMessage.ByeMessage")
+	proto.RegisterType((*ProtocolMessage_SpawnMessage)(nil), "webrealms.ProtocolMessage.SpawnMessage")
+	proto.RegisterType((*ProtocolMessage_UnspawnMessage)(nil), "webrealms.ProtocolMessage.UnspawnMessage")
 	proto.RegisterType((*ProtocolMessage_PositionMessage)(nil), "webrealms.ProtocolMessage.PositionMessage")
 	proto.RegisterType((*ProtocolMessage_RotationMessage)(nil), "webrealms.ProtocolMessage.RotationMessage")
 	proto.RegisterEnum("webrealms.ProtocolMessage_MessageType", ProtocolMessage_MessageType_name, ProtocolMessage_MessageType_value)
@@ -265,30 +330,36 @@ func init() {
 func init() { proto.RegisterFile("webrealms.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 393 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0x4f, 0x8b, 0xda, 0x40,
-	0x18, 0xc6, 0x9b, 0x3f, 0x5a, 0x7d, 0x4d, 0xcd, 0x38, 0x56, 0x18, 0x72, 0x12, 0xa1, 0xad, 0xf4,
-	0xe0, 0xc1, 0x1e, 0x0a, 0x2d, 0x3d, 0x54, 0xb0, 0x1a, 0xb0, 0x49, 0x98, 0x4a, 0x5b, 0x7b, 0x29,
-	0x71, 0x1d, 0xb2, 0x81, 0x98, 0x09, 0x26, 0xe0, 0x66, 0xbf, 0xc3, 0x7e, 0xe7, 0x65, 0xc6, 0x44,
-	0x83, 0x87, 0xb8, 0xa7, 0xbc, 0xcf, 0xc3, 0xf3, 0x7b, 0x98, 0x77, 0x92, 0x80, 0x79, 0x64, 0xdb,
-	0x03, 0xf3, 0xa3, 0x7d, 0x3a, 0x49, 0x0e, 0x3c, 0xe3, 0xb8, 0x7d, 0x36, 0x46, 0x4f, 0x4d, 0x30,
-	0x3d, 0x61, 0xde, 0xf1, 0xe8, 0x27, 0x4b, 0x53, 0x3f, 0x60, 0xf8, 0x0b, 0xe8, 0xeb, 0x3c, 0x61,
-	0x44, 0x19, 0x2a, 0xe3, 0xee, 0xf4, 0xfd, 0xe4, 0x82, 0x5f, 0x25, 0x27, 0xc5, 0x53, 0xa4, 0xa9,
-	0x9e, 0xe5, 0x89, 0x64, 0xbd, 0x30, 0x0e, 0x08, 0x1a, 0x2a, 0xe3, 0x4e, 0x2d, 0x2b, 0x62, 0xc5,
-	0x4c, 0xf5, 0x24, 0x8c, 0x03, 0xc9, 0xf2, 0x38, 0x20, 0xbd, 0xdb, 0x2c, 0xaf, 0xb2, 0x3c, 0x0e,
-	0xf0, 0x37, 0x68, 0x2c, 0x59, 0x14, 0x71, 0x82, 0x25, 0xfc, 0xa1, 0x06, 0x96, 0xb9, 0x92, 0x6e,
-	0xdc, 0x0b, 0x85, 0x3f, 0x83, 0x36, 0xcb, 0x19, 0xe9, 0x4b, 0xf8, 0x5d, 0x0d, 0x3c, 0xcb, 0x59,
-	0x89, 0x6a, 0xdb, 0x9c, 0xe1, 0x1f, 0xd0, 0xf2, 0x78, 0x1a, 0x66, 0x21, 0x8f, 0xc9, 0x5b, 0x49,
-	0x7f, 0xac, 0x3d, 0xf7, 0x29, 0x5a, 0x56, 0xb4, 0x92, 0xc2, 0x10, 0x3d, 0x94, 0x67, 0xbe, 0xec,
-	0x19, 0xdc, 0xec, 0x29, 0xa3, 0xe7, 0x9e, 0x43, 0x61, 0x58, 0x6f, 0xa0, 0x53, 0xb9, 0x58, 0x29,
-	0x2f, 0x77, 0x65, 0x4d, 0xc1, 0xa8, 0x6e, 0x8f, 0xbb, 0xa0, 0xda, 0x3b, 0xf9, 0x9e, 0x0d, 0xaa,
-	0x86, 0x3b, 0x8c, 0x41, 0x77, 0xfc, 0x3d, 0x23, 0xea, 0x50, 0x19, 0xb7, 0xa9, 0x1e, 0xfb, 0x7b,
-	0x66, 0x19, 0x00, 0x97, 0xa5, 0xad, 0xaf, 0x60, 0x5e, 0x2d, 0x81, 0x0d, 0x50, 0xfe, 0xca, 0x0e,
-	0x95, 0x2a, 0x0f, 0x42, 0x6d, 0x24, 0xaf, 0x52, 0x25, 0x17, 0xea, 0x1f, 0xd1, 0x4e, 0xea, 0xd1,
-	0xb2, 0xc1, 0xbc, 0x3a, 0xf9, 0xcb, 0x61, 0xa1, 0xfe, 0x10, 0xfd, 0xa4, 0x8e, 0xa3, 0xdf, 0xd0,
-	0xa9, 0x7c, 0x7c, 0xb8, 0x05, 0xba, 0xe3, 0x3a, 0x73, 0xf4, 0x4a, 0x4c, 0x9e, 0xed, 0x2c, 0x10,
-	0x92, 0x93, 0xeb, 0x2c, 0x50, 0x0f, 0xb7, 0xa1, 0xb1, 0x9c, 0xaf, 0x56, 0x2e, 0xc2, 0xf8, 0x35,
-	0x68, 0xb3, 0xcd, 0x1c, 0xf5, 0xf1, 0x00, 0x7a, 0x9e, 0xfb, 0xcb, 0x5e, 0xdb, 0xae, 0xf3, 0x9f,
-	0xba, 0xeb, 0xef, 0x62, 0x40, 0x83, 0x6d, 0x53, 0xfe, 0x21, 0x9f, 0x9e, 0x03, 0x00, 0x00, 0xff,
-	0xff, 0xfd, 0xb3, 0x17, 0xfc, 0x34, 0x03, 0x00, 0x00,
+	// 488 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x94, 0x41, 0x6f, 0xd3, 0x40,
+	0x10, 0x85, 0x71, 0x70, 0x88, 0x33, 0x09, 0xb6, 0x33, 0x69, 0xa5, 0x95, 0x4f, 0x55, 0x0e, 0x50,
+	0x10, 0xca, 0xa1, 0xdc, 0x40, 0x1c, 0xaa, 0xb4, 0x54, 0x96, 0x60, 0x6d, 0xd9, 0x89, 0x0a, 0xdc,
+	0x9c, 0xd4, 0xb2, 0x2c, 0xb5, 0xbb, 0x96, 0xd7, 0x55, 0x08, 0xe2, 0xbf, 0xf1, 0xd7, 0xd0, 0xae,
+	0xd7, 0x49, 0x1a, 0x24, 0x87, 0x53, 0xfc, 0xcd, 0xbe, 0xf7, 0x34, 0x3b, 0xe3, 0x18, 0x9c, 0x75,
+	0xba, 0x2c, 0xd3, 0xe4, 0xfe, 0x41, 0x4c, 0x8b, 0x92, 0x57, 0x1c, 0xfb, 0xdb, 0xc2, 0xe4, 0x8f,
+	0x05, 0x4e, 0x28, 0x8b, 0x2b, 0x7e, 0xff, 0x35, 0x15, 0x22, 0xc9, 0x52, 0xfc, 0x00, 0xe6, 0x7c,
+	0x53, 0xa4, 0xc4, 0x38, 0x33, 0xce, 0xed, 0x8b, 0x57, 0xd3, 0x9d, 0xfd, 0x40, 0x39, 0xd5, 0xbf,
+	0x52, 0x1d, 0x99, 0xd5, 0xa6, 0x48, 0x71, 0x06, 0xbd, 0x19, 0x67, 0x2c, 0x5d, 0x55, 0xc4, 0x3e,
+	0x33, 0xce, 0x07, 0x17, 0x6f, 0x5a, 0xec, 0x5a, 0xa9, 0x31, 0xea, 0xad, 0x6a, 0xc6, 0x2f, 0x00,
+	0x57, 0xb9, 0xd0, 0x44, 0x1c, 0x95, 0xf3, 0xae, 0x25, 0x67, 0x27, 0x6e, 0xa2, 0xe0, 0x6e, 0x5b,
+	0x92, 0xd7, 0x09, 0x73, 0x96, 0x11, 0x57, 0xe5, 0xb4, 0x5d, 0x47, 0xca, 0x9a, 0x04, 0xb3, 0xc8,
+	0x59, 0xa6, 0xbc, 0x9c, 0x65, 0x64, 0x74, 0xdc, 0xcb, 0xf7, 0xbd, 0x9c, 0x65, 0xf8, 0x09, 0xba,
+	0x71, 0x91, 0xac, 0x19, 0x41, 0x65, 0x7e, 0xdd, 0x62, 0x56, 0xba, 0xc6, 0xdd, 0x15, 0x92, 0xe4,
+	0x24, 0x17, 0x4c, 0x3d, 0x92, 0xf1, 0xd1, 0x49, 0x6a, 0xe5, 0x76, 0x92, 0x8f, 0x35, 0xe3, 0x67,
+	0xb0, 0x42, 0x2e, 0xf2, 0x2a, 0xe7, 0x8c, 0x9c, 0xa8, 0x94, 0xb7, 0xad, 0x77, 0xa8, 0xa5, 0x4d,
+	0x8c, 0x55, 0xe8, 0x82, 0xcc, 0x89, 0x78, 0x95, 0xa8, 0x9c, 0xd3, 0xa3, 0x39, 0x8d, 0x74, 0x9b,
+	0x53, 0xea, 0x82, 0xb7, 0x04, 0xfb, 0xe9, 0xd2, 0xd1, 0x03, 0x6b, 0x21, 0xd2, 0x92, 0x25, 0x0f,
+	0xf5, 0x0b, 0xd7, 0x8f, 0xac, 0x47, 0xcd, 0xf2, 0x2c, 0x4c, 0x84, 0x58, 0xf3, 0xf2, 0x8e, 0x74,
+	0xea, 0xb3, 0x42, 0x33, 0x12, 0xe8, 0xc5, 0xa9, 0x10, 0xb2, 0xa1, 0xe7, 0xea, 0xa8, 0x27, 0x6a,
+	0xf4, 0xc6, 0x30, 0xfa, 0xe7, 0x85, 0xf0, 0x5e, 0xc2, 0x60, 0x6f, 0xbb, 0x0a, 0x77, 0x0b, 0xf3,
+	0x26, 0x30, 0xdc, 0x5f, 0x01, 0x22, 0x98, 0x74, 0xd7, 0x90, 0x29, 0x9b, 0xf1, 0x5c, 0xb0, 0x9f,
+	0x4e, 0xd9, 0xfb, 0x08, 0xce, 0xc1, 0xc4, 0x70, 0x08, 0xc6, 0x37, 0xe5, 0xea, 0x44, 0xc6, 0x4f,
+	0x49, 0xdf, 0x55, 0xe3, 0x9d, 0xc8, 0xd8, 0x48, 0xfa, 0xa1, 0x7a, 0xed, 0x44, 0xc6, 0x2f, 0xcf,
+	0x07, 0xe7, 0x60, 0x4c, 0xff, 0x6f, 0x96, 0x74, 0x4b, 0xcc, 0x9a, 0xd6, 0x93, 0xdf, 0x30, 0xd8,
+	0xfb, 0x23, 0xa2, 0x05, 0x26, 0x0d, 0xe8, 0xb5, 0xfb, 0x0c, 0x07, 0xd0, 0x9b, 0x05, 0x94, 0x5e,
+	0xcf, 0xe6, 0xae, 0x8d, 0x36, 0xc0, 0x95, 0x1f, 0x37, 0xec, 0x48, 0x59, 0xe8, 0xd3, 0x1b, 0xd7,
+	0x55, 0x4f, 0x01, 0xbd, 0x71, 0x47, 0xd8, 0x87, 0x6e, 0x1c, 0x5e, 0xde, 0x52, 0x17, 0xa5, 0x77,
+	0x41, 0x6b, 0x18, 0xe3, 0x10, 0xac, 0x30, 0x88, 0xfd, 0xb9, 0x1f, 0x50, 0xf7, 0x44, 0x52, 0x14,
+	0xcc, 0x2f, 0x15, 0x9d, 0x2e, 0x5f, 0xa8, 0x6f, 0xca, 0xfb, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff,
+	0xfc, 0xf6, 0x36, 0xb5, 0x66, 0x04, 0x00, 0x00,
 }

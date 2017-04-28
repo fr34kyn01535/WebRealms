@@ -5,12 +5,25 @@ message ProtocolMessage {
   MessageType Type = 1;
   enum MessageType {
     NONE = 0;
+    CONNECT = 14;
+    DISCONNECT = 15;
     PING = 16;
     PONG = 17;
-    HELLO = 18;
-    BYE = 19;
-    POSITION_ROTATION = 21;
+    SPAWN = 18;
+    UNSPAWN = 19;
+    POSITION = 20;
+    ROTATION = 21;
   }
+
+  ConnectMessage Connect = 14;
+  message ConnectMessage { 
+    string Username = 1;
+    string Password = 2;
+    string Session = 3;
+  }
+
+  DisconnectMessage Disconnect = 15;
+  message DisconnectMessage { }
 
   PingMessage Ping = 16;
   message PingMessage { }
@@ -18,14 +31,13 @@ message ProtocolMessage {
   PongMessage Pong = 17;
   message PongMessage { }
 
-  HelloMessage Hello = 18;
-  message HelloMessage {
-    bytes Id = 1;
-    string Name = 2;
+  SpawnMessage Spawn = 18;
+  message SpawnMessage {
+    string Name = 1;
   }
 
-  ByeMessage Bye = 19;
-  message ByeMessage { }
+  UnspawnMessage Unspawn = 19;
+  message UnspawnMessage { }
 
   PositionMessage Position = 20;
   message PositionMessage {

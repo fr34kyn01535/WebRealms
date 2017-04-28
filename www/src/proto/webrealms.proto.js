@@ -25,10 +25,12 @@ $root.webrealms = (function() {
          * @typedef webrealms.ProtocolMessage$Properties
          * @type {Object}
          * @property {webrealms.ProtocolMessage.MessageType} [Type] ProtocolMessage Type.
+         * @property {webrealms.ProtocolMessage.ConnectMessage$Properties} [Connect] ProtocolMessage Connect.
+         * @property {webrealms.ProtocolMessage.DisconnectMessage$Properties} [Disconnect] ProtocolMessage Disconnect.
          * @property {webrealms.ProtocolMessage.PingMessage$Properties} [Ping] ProtocolMessage Ping.
          * @property {webrealms.ProtocolMessage.PongMessage$Properties} [Pong] ProtocolMessage Pong.
-         * @property {webrealms.ProtocolMessage.HelloMessage$Properties} [Hello] ProtocolMessage Hello.
-         * @property {webrealms.ProtocolMessage.ByeMessage$Properties} [Bye] ProtocolMessage Bye.
+         * @property {webrealms.ProtocolMessage.SpawnMessage$Properties} [Spawn] ProtocolMessage Spawn.
+         * @property {webrealms.ProtocolMessage.UnspawnMessage$Properties} [Unspawn] ProtocolMessage Unspawn.
          * @property {webrealms.ProtocolMessage.PositionMessage$Properties} [Position] ProtocolMessage Position.
          * @property {webrealms.ProtocolMessage.RotationMessage$Properties} [Rotation] ProtocolMessage Rotation.
          */
@@ -53,6 +55,18 @@ $root.webrealms = (function() {
         ProtocolMessage.prototype.Type = 0;
 
         /**
+         * ProtocolMessage Connect.
+         * @type {(webrealms.ProtocolMessage.ConnectMessage$Properties|null)}
+         */
+        ProtocolMessage.prototype.Connect = null;
+
+        /**
+         * ProtocolMessage Disconnect.
+         * @type {(webrealms.ProtocolMessage.DisconnectMessage$Properties|null)}
+         */
+        ProtocolMessage.prototype.Disconnect = null;
+
+        /**
          * ProtocolMessage Ping.
          * @type {(webrealms.ProtocolMessage.PingMessage$Properties|null)}
          */
@@ -65,16 +79,16 @@ $root.webrealms = (function() {
         ProtocolMessage.prototype.Pong = null;
 
         /**
-         * ProtocolMessage Hello.
-         * @type {(webrealms.ProtocolMessage.HelloMessage$Properties|null)}
+         * ProtocolMessage Spawn.
+         * @type {(webrealms.ProtocolMessage.SpawnMessage$Properties|null)}
          */
-        ProtocolMessage.prototype.Hello = null;
+        ProtocolMessage.prototype.Spawn = null;
 
         /**
-         * ProtocolMessage Bye.
-         * @type {(webrealms.ProtocolMessage.ByeMessage$Properties|null)}
+         * ProtocolMessage Unspawn.
+         * @type {(webrealms.ProtocolMessage.UnspawnMessage$Properties|null)}
          */
-        ProtocolMessage.prototype.Bye = null;
+        ProtocolMessage.prototype.Unspawn = null;
 
         /**
          * ProtocolMessage Position.
@@ -108,14 +122,18 @@ $root.webrealms = (function() {
                 writer = $Writer.create();
             if (message.Type != null && message.hasOwnProperty("Type"))
                 writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.Type);
+            if (message.Connect != null && message.hasOwnProperty("Connect"))
+                $root.webrealms.ProtocolMessage.ConnectMessage.encode(message.Connect, writer.uint32(/* id 14, wireType 2 =*/114).fork()).ldelim();
+            if (message.Disconnect != null && message.hasOwnProperty("Disconnect"))
+                $root.webrealms.ProtocolMessage.DisconnectMessage.encode(message.Disconnect, writer.uint32(/* id 15, wireType 2 =*/122).fork()).ldelim();
             if (message.Ping != null && message.hasOwnProperty("Ping"))
                 $root.webrealms.ProtocolMessage.PingMessage.encode(message.Ping, writer.uint32(/* id 16, wireType 2 =*/130).fork()).ldelim();
             if (message.Pong != null && message.hasOwnProperty("Pong"))
                 $root.webrealms.ProtocolMessage.PongMessage.encode(message.Pong, writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
-            if (message.Hello != null && message.hasOwnProperty("Hello"))
-                $root.webrealms.ProtocolMessage.HelloMessage.encode(message.Hello, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
-            if (message.Bye != null && message.hasOwnProperty("Bye"))
-                $root.webrealms.ProtocolMessage.ByeMessage.encode(message.Bye, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
+            if (message.Spawn != null && message.hasOwnProperty("Spawn"))
+                $root.webrealms.ProtocolMessage.SpawnMessage.encode(message.Spawn, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
+            if (message.Unspawn != null && message.hasOwnProperty("Unspawn"))
+                $root.webrealms.ProtocolMessage.UnspawnMessage.encode(message.Unspawn, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
             if (message.Position != null && message.hasOwnProperty("Position"))
                 $root.webrealms.ProtocolMessage.PositionMessage.encode(message.Position, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
             if (message.Rotation != null && message.hasOwnProperty("Rotation"))
@@ -151,6 +169,12 @@ $root.webrealms = (function() {
                 case 1:
                     message.Type = reader.uint32();
                     break;
+                case 14:
+                    message.Connect = $root.webrealms.ProtocolMessage.ConnectMessage.decode(reader, reader.uint32());
+                    break;
+                case 15:
+                    message.Disconnect = $root.webrealms.ProtocolMessage.DisconnectMessage.decode(reader, reader.uint32());
+                    break;
                 case 16:
                     message.Ping = $root.webrealms.ProtocolMessage.PingMessage.decode(reader, reader.uint32());
                     break;
@@ -158,10 +182,10 @@ $root.webrealms = (function() {
                     message.Pong = $root.webrealms.ProtocolMessage.PongMessage.decode(reader, reader.uint32());
                     break;
                 case 18:
-                    message.Hello = $root.webrealms.ProtocolMessage.HelloMessage.decode(reader, reader.uint32());
+                    message.Spawn = $root.webrealms.ProtocolMessage.SpawnMessage.decode(reader, reader.uint32());
                     break;
                 case 19:
-                    message.Bye = $root.webrealms.ProtocolMessage.ByeMessage.decode(reader, reader.uint32());
+                    message.Unspawn = $root.webrealms.ProtocolMessage.UnspawnMessage.decode(reader, reader.uint32());
                     break;
                 case 20:
                     message.Position = $root.webrealms.ProtocolMessage.PositionMessage.decode(reader, reader.uint32());
@@ -203,13 +227,26 @@ $root.webrealms = (function() {
                 default:
                     return "Type: enum value expected";
                 case 0:
+                case 14:
+                case 15:
                 case 16:
                 case 17:
                 case 18:
                 case 19:
+                case 20:
                 case 21:
                     break;
                 }
+            if (message.Connect != null && message.hasOwnProperty("Connect")) {
+                var error = $root.webrealms.ProtocolMessage.ConnectMessage.verify(message.Connect);
+                if (error)
+                    return "Connect." + error;
+            }
+            if (message.Disconnect != null && message.hasOwnProperty("Disconnect")) {
+                var error = $root.webrealms.ProtocolMessage.DisconnectMessage.verify(message.Disconnect);
+                if (error)
+                    return "Disconnect." + error;
+            }
             if (message.Ping != null && message.hasOwnProperty("Ping")) {
                 var error = $root.webrealms.ProtocolMessage.PingMessage.verify(message.Ping);
                 if (error)
@@ -220,15 +257,15 @@ $root.webrealms = (function() {
                 if (error)
                     return "Pong." + error;
             }
-            if (message.Hello != null && message.hasOwnProperty("Hello")) {
-                var error = $root.webrealms.ProtocolMessage.HelloMessage.verify(message.Hello);
+            if (message.Spawn != null && message.hasOwnProperty("Spawn")) {
+                var error = $root.webrealms.ProtocolMessage.SpawnMessage.verify(message.Spawn);
                 if (error)
-                    return "Hello." + error;
+                    return "Spawn." + error;
             }
-            if (message.Bye != null && message.hasOwnProperty("Bye")) {
-                var error = $root.webrealms.ProtocolMessage.ByeMessage.verify(message.Bye);
+            if (message.Unspawn != null && message.hasOwnProperty("Unspawn")) {
+                var error = $root.webrealms.ProtocolMessage.UnspawnMessage.verify(message.Unspawn);
                 if (error)
-                    return "Bye." + error;
+                    return "Unspawn." + error;
             }
             if (message.Position != null && message.hasOwnProperty("Position")) {
                 var error = $root.webrealms.ProtocolMessage.PositionMessage.verify(message.Position);
@@ -257,6 +294,14 @@ $root.webrealms = (function() {
             case 0:
                 message.Type = 0;
                 break;
+            case "CONNECT":
+            case 14:
+                message.Type = 14;
+                break;
+            case "DISCONNECT":
+            case 15:
+                message.Type = 15;
+                break;
             case "PING":
             case 16:
                 message.Type = 16;
@@ -265,18 +310,32 @@ $root.webrealms = (function() {
             case 17:
                 message.Type = 17;
                 break;
-            case "HELLO":
+            case "SPAWN":
             case 18:
                 message.Type = 18;
                 break;
-            case "BYE":
+            case "UNSPAWN":
             case 19:
                 message.Type = 19;
                 break;
-            case "POSITION_ROTATION":
+            case "POSITION":
+            case 20:
+                message.Type = 20;
+                break;
+            case "ROTATION":
             case 21:
                 message.Type = 21;
                 break;
+            }
+            if (object.Connect != null) {
+                if (typeof object.Connect !== "object")
+                    throw TypeError(".webrealms.ProtocolMessage.Connect: object expected");
+                message.Connect = $root.webrealms.ProtocolMessage.ConnectMessage.fromObject(object.Connect);
+            }
+            if (object.Disconnect != null) {
+                if (typeof object.Disconnect !== "object")
+                    throw TypeError(".webrealms.ProtocolMessage.Disconnect: object expected");
+                message.Disconnect = $root.webrealms.ProtocolMessage.DisconnectMessage.fromObject(object.Disconnect);
             }
             if (object.Ping != null) {
                 if (typeof object.Ping !== "object")
@@ -288,15 +347,15 @@ $root.webrealms = (function() {
                     throw TypeError(".webrealms.ProtocolMessage.Pong: object expected");
                 message.Pong = $root.webrealms.ProtocolMessage.PongMessage.fromObject(object.Pong);
             }
-            if (object.Hello != null) {
-                if (typeof object.Hello !== "object")
-                    throw TypeError(".webrealms.ProtocolMessage.Hello: object expected");
-                message.Hello = $root.webrealms.ProtocolMessage.HelloMessage.fromObject(object.Hello);
+            if (object.Spawn != null) {
+                if (typeof object.Spawn !== "object")
+                    throw TypeError(".webrealms.ProtocolMessage.Spawn: object expected");
+                message.Spawn = $root.webrealms.ProtocolMessage.SpawnMessage.fromObject(object.Spawn);
             }
-            if (object.Bye != null) {
-                if (typeof object.Bye !== "object")
-                    throw TypeError(".webrealms.ProtocolMessage.Bye: object expected");
-                message.Bye = $root.webrealms.ProtocolMessage.ByeMessage.fromObject(object.Bye);
+            if (object.Unspawn != null) {
+                if (typeof object.Unspawn !== "object")
+                    throw TypeError(".webrealms.ProtocolMessage.Unspawn: object expected");
+                message.Unspawn = $root.webrealms.ProtocolMessage.UnspawnMessage.fromObject(object.Unspawn);
             }
             if (object.Position != null) {
                 if (typeof object.Position !== "object")
@@ -332,23 +391,29 @@ $root.webrealms = (function() {
             var object = {};
             if (options.defaults) {
                 object.Type = options.enums === String ? "NONE" : 0;
+                object.Connect = null;
+                object.Disconnect = null;
                 object.Ping = null;
                 object.Pong = null;
-                object.Hello = null;
-                object.Bye = null;
+                object.Spawn = null;
+                object.Unspawn = null;
                 object.Position = null;
                 object.Rotation = null;
             }
             if (message.Type != null && message.hasOwnProperty("Type"))
                 object.Type = options.enums === String ? $root.webrealms.ProtocolMessage.MessageType[message.Type] : message.Type;
+            if (message.Connect != null && message.hasOwnProperty("Connect"))
+                object.Connect = $root.webrealms.ProtocolMessage.ConnectMessage.toObject(message.Connect, options);
+            if (message.Disconnect != null && message.hasOwnProperty("Disconnect"))
+                object.Disconnect = $root.webrealms.ProtocolMessage.DisconnectMessage.toObject(message.Disconnect, options);
             if (message.Ping != null && message.hasOwnProperty("Ping"))
                 object.Ping = $root.webrealms.ProtocolMessage.PingMessage.toObject(message.Ping, options);
             if (message.Pong != null && message.hasOwnProperty("Pong"))
                 object.Pong = $root.webrealms.ProtocolMessage.PongMessage.toObject(message.Pong, options);
-            if (message.Hello != null && message.hasOwnProperty("Hello"))
-                object.Hello = $root.webrealms.ProtocolMessage.HelloMessage.toObject(message.Hello, options);
-            if (message.Bye != null && message.hasOwnProperty("Bye"))
-                object.Bye = $root.webrealms.ProtocolMessage.ByeMessage.toObject(message.Bye, options);
+            if (message.Spawn != null && message.hasOwnProperty("Spawn"))
+                object.Spawn = $root.webrealms.ProtocolMessage.SpawnMessage.toObject(message.Spawn, options);
+            if (message.Unspawn != null && message.hasOwnProperty("Unspawn"))
+                object.Unspawn = $root.webrealms.ProtocolMessage.UnspawnMessage.toObject(message.Unspawn, options);
             if (message.Position != null && message.hasOwnProperty("Position"))
                 object.Position = $root.webrealms.ProtocolMessage.PositionMessage.toObject(message.Position, options);
             if (message.Rotation != null && message.hasOwnProperty("Rotation"))
@@ -379,21 +444,391 @@ $root.webrealms = (function() {
          * @memberof webrealms.ProtocolMessage
          * @enum {number}
          * @property {number} NONE=0 NONE value
+         * @property {number} CONNECT=14 CONNECT value
+         * @property {number} DISCONNECT=15 DISCONNECT value
          * @property {number} PING=16 PING value
          * @property {number} PONG=17 PONG value
-         * @property {number} HELLO=18 HELLO value
-         * @property {number} BYE=19 BYE value
-         * @property {number} POSITION_ROTATION=21 POSITION_ROTATION value
+         * @property {number} SPAWN=18 SPAWN value
+         * @property {number} UNSPAWN=19 UNSPAWN value
+         * @property {number} POSITION=20 POSITION value
+         * @property {number} ROTATION=21 ROTATION value
          */
         ProtocolMessage.MessageType = (function() {
             var valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NONE"] = 0;
+            values[valuesById[14] = "CONNECT"] = 14;
+            values[valuesById[15] = "DISCONNECT"] = 15;
             values[valuesById[16] = "PING"] = 16;
             values[valuesById[17] = "PONG"] = 17;
-            values[valuesById[18] = "HELLO"] = 18;
-            values[valuesById[19] = "BYE"] = 19;
-            values[valuesById[21] = "POSITION_ROTATION"] = 21;
+            values[valuesById[18] = "SPAWN"] = 18;
+            values[valuesById[19] = "UNSPAWN"] = 19;
+            values[valuesById[20] = "POSITION"] = 20;
+            values[valuesById[21] = "ROTATION"] = 21;
             return values;
+        })();
+
+        ProtocolMessage.ConnectMessage = (function() {
+
+            /**
+             * Properties of a ConnectMessage.
+             * @typedef webrealms.ProtocolMessage.ConnectMessage$Properties
+             * @type {Object}
+             * @property {string} [Username] ConnectMessage Username.
+             * @property {string} [Password] ConnectMessage Password.
+             * @property {string} [Session] ConnectMessage Session.
+             */
+
+            /**
+             * Constructs a new ConnectMessage.
+             * @exports webrealms.ProtocolMessage.ConnectMessage
+             * @constructor
+             * @param {webrealms.ProtocolMessage.ConnectMessage$Properties=} [properties] Properties to set
+             */
+            function ConnectMessage(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * ConnectMessage Username.
+             * @type {string}
+             */
+            ConnectMessage.prototype.Username = "";
+
+            /**
+             * ConnectMessage Password.
+             * @type {string}
+             */
+            ConnectMessage.prototype.Password = "";
+
+            /**
+             * ConnectMessage Session.
+             * @type {string}
+             */
+            ConnectMessage.prototype.Session = "";
+
+            /**
+             * Creates a new ConnectMessage instance using the specified properties.
+             * @param {webrealms.ProtocolMessage.ConnectMessage$Properties=} [properties] Properties to set
+             * @returns {webrealms.ProtocolMessage.ConnectMessage} ConnectMessage instance
+             */
+            ConnectMessage.create = function create(properties) {
+                return new ConnectMessage(properties);
+            };
+
+            /**
+             * Encodes the specified ConnectMessage message. Does not implicitly {@link webrealms.ProtocolMessage.ConnectMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.ConnectMessage$Properties} message ConnectMessage message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ConnectMessage.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.Username != null && message.hasOwnProperty("Username"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Username);
+                if (message.Password != null && message.hasOwnProperty("Password"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.Password);
+                if (message.Session != null && message.hasOwnProperty("Session"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.Session);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ConnectMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.ConnectMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.ConnectMessage$Properties} message ConnectMessage message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ConnectMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a ConnectMessage message from the specified reader or buffer.
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {webrealms.ProtocolMessage.ConnectMessage} ConnectMessage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ConnectMessage.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.webrealms.ProtocolMessage.ConnectMessage();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.Username = reader.string();
+                        break;
+                    case 2:
+                        message.Password = reader.string();
+                        break;
+                    case 3:
+                        message.Session = reader.string();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a ConnectMessage message from the specified reader or buffer, length delimited.
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {webrealms.ProtocolMessage.ConnectMessage} ConnectMessage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ConnectMessage.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a ConnectMessage message.
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {?string} `null` if valid, otherwise the reason why it is not
+             */
+            ConnectMessage.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.Username != null && message.hasOwnProperty("Username"))
+                    if (!$util.isString(message.Username))
+                        return "Username: string expected";
+                if (message.Password != null && message.hasOwnProperty("Password"))
+                    if (!$util.isString(message.Password))
+                        return "Password: string expected";
+                if (message.Session != null && message.hasOwnProperty("Session"))
+                    if (!$util.isString(message.Session))
+                        return "Session: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a ConnectMessage message from a plain object. Also converts values to their respective internal types.
+             * @param {Object.<string,*>} object Plain object
+             * @returns {webrealms.ProtocolMessage.ConnectMessage} ConnectMessage
+             */
+            ConnectMessage.fromObject = function fromObject(object) {
+                if (object instanceof $root.webrealms.ProtocolMessage.ConnectMessage)
+                    return object;
+                var message = new $root.webrealms.ProtocolMessage.ConnectMessage();
+                if (object.Username != null)
+                    message.Username = String(object.Username);
+                if (object.Password != null)
+                    message.Password = String(object.Password);
+                if (object.Session != null)
+                    message.Session = String(object.Session);
+                return message;
+            };
+
+            /**
+             * Creates a ConnectMessage message from a plain object. Also converts values to their respective internal types.
+             * This is an alias of {@link webrealms.ProtocolMessage.ConnectMessage.fromObject}.
+             * @function
+             * @param {Object.<string,*>} object Plain object
+             * @returns {webrealms.ProtocolMessage.ConnectMessage} ConnectMessage
+             */
+            ConnectMessage.from = ConnectMessage.fromObject;
+
+            /**
+             * Creates a plain object from a ConnectMessage message. Also converts values to other types if specified.
+             * @param {webrealms.ProtocolMessage.ConnectMessage} message ConnectMessage
+             * @param {$protobuf.ConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ConnectMessage.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.Username = "";
+                    object.Password = "";
+                    object.Session = "";
+                }
+                if (message.Username != null && message.hasOwnProperty("Username"))
+                    object.Username = message.Username;
+                if (message.Password != null && message.hasOwnProperty("Password"))
+                    object.Password = message.Password;
+                if (message.Session != null && message.hasOwnProperty("Session"))
+                    object.Session = message.Session;
+                return object;
+            };
+
+            /**
+             * Creates a plain object from this ConnectMessage message. Also converts values to other types if specified.
+             * @param {$protobuf.ConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ConnectMessage.prototype.toObject = function toObject(options) {
+                return this.constructor.toObject(this, options);
+            };
+
+            /**
+             * Converts this ConnectMessage to JSON.
+             * @returns {Object.<string,*>} JSON object
+             */
+            ConnectMessage.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            return ConnectMessage;
+        })();
+
+        ProtocolMessage.DisconnectMessage = (function() {
+
+            /**
+             * Properties of a DisconnectMessage.
+             * @typedef webrealms.ProtocolMessage.DisconnectMessage$Properties
+             * @type {Object}
+             */
+
+            /**
+             * Constructs a new DisconnectMessage.
+             * @exports webrealms.ProtocolMessage.DisconnectMessage
+             * @constructor
+             * @param {webrealms.ProtocolMessage.DisconnectMessage$Properties=} [properties] Properties to set
+             */
+            function DisconnectMessage(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Creates a new DisconnectMessage instance using the specified properties.
+             * @param {webrealms.ProtocolMessage.DisconnectMessage$Properties=} [properties] Properties to set
+             * @returns {webrealms.ProtocolMessage.DisconnectMessage} DisconnectMessage instance
+             */
+            DisconnectMessage.create = function create(properties) {
+                return new DisconnectMessage(properties);
+            };
+
+            /**
+             * Encodes the specified DisconnectMessage message. Does not implicitly {@link webrealms.ProtocolMessage.DisconnectMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.DisconnectMessage$Properties} message DisconnectMessage message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            DisconnectMessage.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified DisconnectMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.DisconnectMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.DisconnectMessage$Properties} message DisconnectMessage message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            DisconnectMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a DisconnectMessage message from the specified reader or buffer.
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {webrealms.ProtocolMessage.DisconnectMessage} DisconnectMessage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DisconnectMessage.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.webrealms.ProtocolMessage.DisconnectMessage();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a DisconnectMessage message from the specified reader or buffer, length delimited.
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {webrealms.ProtocolMessage.DisconnectMessage} DisconnectMessage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DisconnectMessage.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a DisconnectMessage message.
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {?string} `null` if valid, otherwise the reason why it is not
+             */
+            DisconnectMessage.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                return null;
+            };
+
+            /**
+             * Creates a DisconnectMessage message from a plain object. Also converts values to their respective internal types.
+             * @param {Object.<string,*>} object Plain object
+             * @returns {webrealms.ProtocolMessage.DisconnectMessage} DisconnectMessage
+             */
+            DisconnectMessage.fromObject = function fromObject(object) {
+                if (object instanceof $root.webrealms.ProtocolMessage.DisconnectMessage)
+                    return object;
+                return new $root.webrealms.ProtocolMessage.DisconnectMessage();
+            };
+
+            /**
+             * Creates a DisconnectMessage message from a plain object. Also converts values to their respective internal types.
+             * This is an alias of {@link webrealms.ProtocolMessage.DisconnectMessage.fromObject}.
+             * @function
+             * @param {Object.<string,*>} object Plain object
+             * @returns {webrealms.ProtocolMessage.DisconnectMessage} DisconnectMessage
+             */
+            DisconnectMessage.from = DisconnectMessage.fromObject;
+
+            /**
+             * Creates a plain object from a DisconnectMessage message. Also converts values to other types if specified.
+             * @param {webrealms.ProtocolMessage.DisconnectMessage} message DisconnectMessage
+             * @param {$protobuf.ConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            DisconnectMessage.toObject = function toObject() {
+                return {};
+            };
+
+            /**
+             * Creates a plain object from this DisconnectMessage message. Also converts values to other types if specified.
+             * @param {$protobuf.ConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            DisconnectMessage.prototype.toObject = function toObject(options) {
+                return this.constructor.toObject(this, options);
+            };
+
+            /**
+             * Converts this DisconnectMessage to JSON.
+             * @returns {Object.<string,*>} JSON object
+             */
+            DisconnectMessage.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            return DisconnectMessage;
         })();
 
         ProtocolMessage.PingMessage = (function() {
@@ -694,23 +1129,22 @@ $root.webrealms = (function() {
             return PongMessage;
         })();
 
-        ProtocolMessage.HelloMessage = (function() {
+        ProtocolMessage.SpawnMessage = (function() {
 
             /**
-             * Properties of a HelloMessage.
-             * @typedef webrealms.ProtocolMessage.HelloMessage$Properties
+             * Properties of a SpawnMessage.
+             * @typedef webrealms.ProtocolMessage.SpawnMessage$Properties
              * @type {Object}
-             * @property {Uint8Array} [Id] HelloMessage Id.
-             * @property {string} [Name] HelloMessage Name.
+             * @property {string} [Name] SpawnMessage Name.
              */
 
             /**
-             * Constructs a new HelloMessage.
-             * @exports webrealms.ProtocolMessage.HelloMessage
+             * Constructs a new SpawnMessage.
+             * @exports webrealms.ProtocolMessage.SpawnMessage
              * @constructor
-             * @param {webrealms.ProtocolMessage.HelloMessage$Properties=} [properties] Properties to set
+             * @param {webrealms.ProtocolMessage.SpawnMessage$Properties=} [properties] Properties to set
              */
-            function HelloMessage(properties) {
+            function SpawnMessage(properties) {
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -718,71 +1152,60 @@ $root.webrealms = (function() {
             }
 
             /**
-             * HelloMessage Id.
-             * @type {Uint8Array}
-             */
-            HelloMessage.prototype.Id = $util.newBuffer([]);
-
-            /**
-             * HelloMessage Name.
+             * SpawnMessage Name.
              * @type {string}
              */
-            HelloMessage.prototype.Name = "";
+            SpawnMessage.prototype.Name = "";
 
             /**
-             * Creates a new HelloMessage instance using the specified properties.
-             * @param {webrealms.ProtocolMessage.HelloMessage$Properties=} [properties] Properties to set
-             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage instance
+             * Creates a new SpawnMessage instance using the specified properties.
+             * @param {webrealms.ProtocolMessage.SpawnMessage$Properties=} [properties] Properties to set
+             * @returns {webrealms.ProtocolMessage.SpawnMessage} SpawnMessage instance
              */
-            HelloMessage.create = function create(properties) {
-                return new HelloMessage(properties);
+            SpawnMessage.create = function create(properties) {
+                return new SpawnMessage(properties);
             };
 
             /**
-             * Encodes the specified HelloMessage message. Does not implicitly {@link webrealms.ProtocolMessage.HelloMessage.verify|verify} messages.
-             * @param {webrealms.ProtocolMessage.HelloMessage$Properties} message HelloMessage message or plain object to encode
+             * Encodes the specified SpawnMessage message. Does not implicitly {@link webrealms.ProtocolMessage.SpawnMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.SpawnMessage$Properties} message SpawnMessage message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            HelloMessage.encode = function encode(message, writer) {
+            SpawnMessage.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Id != null && message.hasOwnProperty("Id"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).bytes(message.Id);
                 if (message.Name != null && message.hasOwnProperty("Name"))
-                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.Name);
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Name);
                 return writer;
             };
 
             /**
-             * Encodes the specified HelloMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.HelloMessage.verify|verify} messages.
-             * @param {webrealms.ProtocolMessage.HelloMessage$Properties} message HelloMessage message or plain object to encode
+             * Encodes the specified SpawnMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.SpawnMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.SpawnMessage$Properties} message SpawnMessage message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            HelloMessage.encodeDelimited = function encodeDelimited(message, writer) {
+            SpawnMessage.encodeDelimited = function encodeDelimited(message, writer) {
                 return this.encode(message, writer).ldelim();
             };
 
             /**
-             * Decodes a HelloMessage message from the specified reader or buffer.
+             * Decodes a SpawnMessage message from the specified reader or buffer.
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             * @returns {webrealms.ProtocolMessage.SpawnMessage} SpawnMessage
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            HelloMessage.decode = function decode(reader, length) {
+            SpawnMessage.decode = function decode(reader, length) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.webrealms.ProtocolMessage.HelloMessage();
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.webrealms.ProtocolMessage.SpawnMessage();
                 while (reader.pos < end) {
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
                     case 1:
-                        message.Id = reader.bytes();
-                        break;
-                    case 2:
                         message.Name = reader.string();
                         break;
                     default:
@@ -794,29 +1217,26 @@ $root.webrealms = (function() {
             };
 
             /**
-             * Decodes a HelloMessage message from the specified reader or buffer, length delimited.
+             * Decodes a SpawnMessage message from the specified reader or buffer, length delimited.
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             * @returns {webrealms.ProtocolMessage.SpawnMessage} SpawnMessage
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            HelloMessage.decodeDelimited = function decodeDelimited(reader) {
+            SpawnMessage.decodeDelimited = function decodeDelimited(reader) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader(reader);
                 return this.decode(reader, reader.uint32());
             };
 
             /**
-             * Verifies a HelloMessage message.
+             * Verifies a SpawnMessage message.
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {?string} `null` if valid, otherwise the reason why it is not
              */
-            HelloMessage.verify = function verify(message) {
+            SpawnMessage.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Id != null && message.hasOwnProperty("Id"))
-                    if (!(message.Id && typeof message.Id.length === "number" || $util.isString(message.Id)))
-                        return "Id: buffer expected";
                 if (message.Name != null && message.hasOwnProperty("Name"))
                     if (!$util.isString(message.Name))
                         return "Name: string expected";
@@ -824,89 +1244,80 @@ $root.webrealms = (function() {
             };
 
             /**
-             * Creates a HelloMessage message from a plain object. Also converts values to their respective internal types.
+             * Creates a SpawnMessage message from a plain object. Also converts values to their respective internal types.
              * @param {Object.<string,*>} object Plain object
-             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             * @returns {webrealms.ProtocolMessage.SpawnMessage} SpawnMessage
              */
-            HelloMessage.fromObject = function fromObject(object) {
-                if (object instanceof $root.webrealms.ProtocolMessage.HelloMessage)
+            SpawnMessage.fromObject = function fromObject(object) {
+                if (object instanceof $root.webrealms.ProtocolMessage.SpawnMessage)
                     return object;
-                var message = new $root.webrealms.ProtocolMessage.HelloMessage();
-                if (object.Id != null)
-                    if (typeof object.Id === "string")
-                        $util.base64.decode(object.Id, message.Id = $util.newBuffer($util.base64.length(object.Id)), 0);
-                    else if (object.Id.length)
-                        message.Id = object.Id;
+                var message = new $root.webrealms.ProtocolMessage.SpawnMessage();
                 if (object.Name != null)
                     message.Name = String(object.Name);
                 return message;
             };
 
             /**
-             * Creates a HelloMessage message from a plain object. Also converts values to their respective internal types.
-             * This is an alias of {@link webrealms.ProtocolMessage.HelloMessage.fromObject}.
+             * Creates a SpawnMessage message from a plain object. Also converts values to their respective internal types.
+             * This is an alias of {@link webrealms.ProtocolMessage.SpawnMessage.fromObject}.
              * @function
              * @param {Object.<string,*>} object Plain object
-             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             * @returns {webrealms.ProtocolMessage.SpawnMessage} SpawnMessage
              */
-            HelloMessage.from = HelloMessage.fromObject;
+            SpawnMessage.from = SpawnMessage.fromObject;
 
             /**
-             * Creates a plain object from a HelloMessage message. Also converts values to other types if specified.
-             * @param {webrealms.ProtocolMessage.HelloMessage} message HelloMessage
+             * Creates a plain object from a SpawnMessage message. Also converts values to other types if specified.
+             * @param {webrealms.ProtocolMessage.SpawnMessage} message SpawnMessage
              * @param {$protobuf.ConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            HelloMessage.toObject = function toObject(message, options) {
+            SpawnMessage.toObject = function toObject(message, options) {
                 if (!options)
                     options = {};
                 var object = {};
-                if (options.defaults) {
-                    object.Id = options.bytes === String ? "" : [];
+                if (options.defaults)
                     object.Name = "";
-                }
-                if (message.Id != null && message.hasOwnProperty("Id"))
-                    object.Id = options.bytes === String ? $util.base64.encode(message.Id, 0, message.Id.length) : options.bytes === Array ? Array.prototype.slice.call(message.Id) : message.Id;
                 if (message.Name != null && message.hasOwnProperty("Name"))
                     object.Name = message.Name;
                 return object;
             };
 
             /**
-             * Creates a plain object from this HelloMessage message. Also converts values to other types if specified.
+             * Creates a plain object from this SpawnMessage message. Also converts values to other types if specified.
              * @param {$protobuf.ConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            HelloMessage.prototype.toObject = function toObject(options) {
+            SpawnMessage.prototype.toObject = function toObject(options) {
                 return this.constructor.toObject(this, options);
             };
 
             /**
-             * Converts this HelloMessage to JSON.
+             * Converts this SpawnMessage to JSON.
              * @returns {Object.<string,*>} JSON object
              */
-            HelloMessage.prototype.toJSON = function toJSON() {
+            SpawnMessage.prototype.toJSON = function toJSON() {
                 return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
             };
 
-            return HelloMessage;
+            return SpawnMessage;
         })();
 
-        ProtocolMessage.ByeMessage = (function() {
+        ProtocolMessage.UnspawnMessage = (function() {
 
             /**
-             * Properties of a ByeMessage.
-             * @typedef webrealms.ProtocolMessage.ByeMessage$Properties
+             * Properties of an UnspawnMessage.
+             * @typedef webrealms.ProtocolMessage.UnspawnMessage$Properties
              * @type {Object}
              */
 
             /**
-             * Constructs a new ByeMessage.
-             * @exports webrealms.ProtocolMessage.ByeMessage
+             * Constructs a new UnspawnMessage.
+             * @exports webrealms.ProtocolMessage.UnspawnMessage
              * @constructor
-             * @param {webrealms.ProtocolMessage.ByeMessage$Properties=} [properties] Properties to set
+             * @param {webrealms.ProtocolMessage.UnspawnMessage$Properties=} [properties] Properties to set
              */
-            function ByeMessage(properties) {
+            function UnspawnMessage(properties) {
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -914,48 +1325,48 @@ $root.webrealms = (function() {
             }
 
             /**
-             * Creates a new ByeMessage instance using the specified properties.
-             * @param {webrealms.ProtocolMessage.ByeMessage$Properties=} [properties] Properties to set
-             * @returns {webrealms.ProtocolMessage.ByeMessage} ByeMessage instance
+             * Creates a new UnspawnMessage instance using the specified properties.
+             * @param {webrealms.ProtocolMessage.UnspawnMessage$Properties=} [properties] Properties to set
+             * @returns {webrealms.ProtocolMessage.UnspawnMessage} UnspawnMessage instance
              */
-            ByeMessage.create = function create(properties) {
-                return new ByeMessage(properties);
+            UnspawnMessage.create = function create(properties) {
+                return new UnspawnMessage(properties);
             };
 
             /**
-             * Encodes the specified ByeMessage message. Does not implicitly {@link webrealms.ProtocolMessage.ByeMessage.verify|verify} messages.
-             * @param {webrealms.ProtocolMessage.ByeMessage$Properties} message ByeMessage message or plain object to encode
+             * Encodes the specified UnspawnMessage message. Does not implicitly {@link webrealms.ProtocolMessage.UnspawnMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.UnspawnMessage$Properties} message UnspawnMessage message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ByeMessage.encode = function encode(message, writer) {
+            UnspawnMessage.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
                 return writer;
             };
 
             /**
-             * Encodes the specified ByeMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.ByeMessage.verify|verify} messages.
-             * @param {webrealms.ProtocolMessage.ByeMessage$Properties} message ByeMessage message or plain object to encode
+             * Encodes the specified UnspawnMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.UnspawnMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.UnspawnMessage$Properties} message UnspawnMessage message or plain object to encode
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ByeMessage.encodeDelimited = function encodeDelimited(message, writer) {
+            UnspawnMessage.encodeDelimited = function encodeDelimited(message, writer) {
                 return this.encode(message, writer).ldelim();
             };
 
             /**
-             * Decodes a ByeMessage message from the specified reader or buffer.
+             * Decodes an UnspawnMessage message from the specified reader or buffer.
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
              * @param {number} [length] Message length if known beforehand
-             * @returns {webrealms.ProtocolMessage.ByeMessage} ByeMessage
+             * @returns {webrealms.ProtocolMessage.UnspawnMessage} UnspawnMessage
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ByeMessage.decode = function decode(reader, length) {
+            UnspawnMessage.decode = function decode(reader, length) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.webrealms.ProtocolMessage.ByeMessage();
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.webrealms.ProtocolMessage.UnspawnMessage();
                 while (reader.pos < end) {
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
@@ -968,77 +1379,77 @@ $root.webrealms = (function() {
             };
 
             /**
-             * Decodes a ByeMessage message from the specified reader or buffer, length delimited.
+             * Decodes an UnspawnMessage message from the specified reader or buffer, length delimited.
              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {webrealms.ProtocolMessage.ByeMessage} ByeMessage
+             * @returns {webrealms.ProtocolMessage.UnspawnMessage} UnspawnMessage
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ByeMessage.decodeDelimited = function decodeDelimited(reader) {
+            UnspawnMessage.decodeDelimited = function decodeDelimited(reader) {
                 if (!(reader instanceof $Reader))
                     reader = $Reader(reader);
                 return this.decode(reader, reader.uint32());
             };
 
             /**
-             * Verifies a ByeMessage message.
+             * Verifies an UnspawnMessage message.
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {?string} `null` if valid, otherwise the reason why it is not
              */
-            ByeMessage.verify = function verify(message) {
+            UnspawnMessage.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
                 return null;
             };
 
             /**
-             * Creates a ByeMessage message from a plain object. Also converts values to their respective internal types.
+             * Creates an UnspawnMessage message from a plain object. Also converts values to their respective internal types.
              * @param {Object.<string,*>} object Plain object
-             * @returns {webrealms.ProtocolMessage.ByeMessage} ByeMessage
+             * @returns {webrealms.ProtocolMessage.UnspawnMessage} UnspawnMessage
              */
-            ByeMessage.fromObject = function fromObject(object) {
-                if (object instanceof $root.webrealms.ProtocolMessage.ByeMessage)
+            UnspawnMessage.fromObject = function fromObject(object) {
+                if (object instanceof $root.webrealms.ProtocolMessage.UnspawnMessage)
                     return object;
-                return new $root.webrealms.ProtocolMessage.ByeMessage();
+                return new $root.webrealms.ProtocolMessage.UnspawnMessage();
             };
 
             /**
-             * Creates a ByeMessage message from a plain object. Also converts values to their respective internal types.
-             * This is an alias of {@link webrealms.ProtocolMessage.ByeMessage.fromObject}.
+             * Creates an UnspawnMessage message from a plain object. Also converts values to their respective internal types.
+             * This is an alias of {@link webrealms.ProtocolMessage.UnspawnMessage.fromObject}.
              * @function
              * @param {Object.<string,*>} object Plain object
-             * @returns {webrealms.ProtocolMessage.ByeMessage} ByeMessage
+             * @returns {webrealms.ProtocolMessage.UnspawnMessage} UnspawnMessage
              */
-            ByeMessage.from = ByeMessage.fromObject;
+            UnspawnMessage.from = UnspawnMessage.fromObject;
 
             /**
-             * Creates a plain object from a ByeMessage message. Also converts values to other types if specified.
-             * @param {webrealms.ProtocolMessage.ByeMessage} message ByeMessage
+             * Creates a plain object from an UnspawnMessage message. Also converts values to other types if specified.
+             * @param {webrealms.ProtocolMessage.UnspawnMessage} message UnspawnMessage
              * @param {$protobuf.ConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ByeMessage.toObject = function toObject() {
+            UnspawnMessage.toObject = function toObject() {
                 return {};
             };
 
             /**
-             * Creates a plain object from this ByeMessage message. Also converts values to other types if specified.
+             * Creates a plain object from this UnspawnMessage message. Also converts values to other types if specified.
              * @param {$protobuf.ConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ByeMessage.prototype.toObject = function toObject(options) {
+            UnspawnMessage.prototype.toObject = function toObject(options) {
                 return this.constructor.toObject(this, options);
             };
 
             /**
-             * Converts this ByeMessage to JSON.
+             * Converts this UnspawnMessage to JSON.
              * @returns {Object.<string,*>} JSON object
              */
-            ByeMessage.prototype.toJSON = function toJSON() {
+            UnspawnMessage.prototype.toJSON = function toJSON() {
                 return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
             };
 
-            return ByeMessage;
+            return UnspawnMessage;
         })();
 
         ProtocolMessage.PositionMessage = (function() {

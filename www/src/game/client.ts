@@ -41,16 +41,18 @@ export class Client {
         if(typeof content == 'string'){
             this.worker.postMessage(content);
         }else{
-            this.worker.postMessage(["message",content]);
+            let message = this.builder.create(content);
+            this.worker.postMessage(["message",root.webrealms.ProtocolMessage.toObject(message)]);
         }
     }
 
-    public SendHello(id: Uint8Array,name: string){
+    public SendConnect(username: string,password: string,session: string){
         this.send({
-            Type: root.webrealms.ProtocolMessage.MessageType.HELLO,
-            Hello: {
-                Id: id,
-                Name: name
+            Type: root.webrealms.ProtocolMessage.MessageType.CONNECT,
+            Connect: {
+                Username: username,
+                Password: password,
+                Session: session 
             }
         });
     }

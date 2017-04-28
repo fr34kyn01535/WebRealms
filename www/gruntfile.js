@@ -5,6 +5,10 @@ module.exports = function(grunt) {
             src: ['src/game/*.ts'],
             dest: 'dist/bundle.js',
         },
+        dist: {
+            src: ['node_modules/phaser-ce/build/pixi.js','node_modules/phaser-ce/build/p2.js'],
+            dest: 'dist/dist.bundle.js',
+        },
         worker: {
             src: ['src/worker/*.ts'],
             dest: 'dist/worker.bundle.js',
@@ -26,19 +30,12 @@ module.exports = function(grunt) {
       main: {
         files: {
           'dist/bundle.min.js': ['dist/bundle.js'],
+          'dist/dist.bundle.min.js': ['dist/dist.bundle.js'],
           'dist/worker.bundle.min.js': ['dist/worker.bundle.js'],
         }
       },
       options: {
         sourceMap: true
-      }
-    },
-    inject: {
-      main: {
-        scriptSrc: ['src/livereload.js','dist/bundle.min.js'],
-        files: {
-          'index.html': 'src/index.html'
-        }
       }
     },
     exec: {
@@ -48,7 +45,23 @@ module.exports = function(grunt) {
     },
     watch: {
       main: {
-        files: ['gruntfile.js', 'tsconfig.json','src/*','src/game/*','src/proto/*','src/worker/*'],
+        files: ['tsconfig.json','src/*','src/game/*','src/proto/*','src/worker/*'],
+        tasks: ['build'],
+        options: {
+          spawn : true,
+          reload: false
+        }
+      },
+      proto: {
+        files: ['../webrealms.proto'],
+        tasks: ['exec:generateProto'],
+        options: {
+          spawn : true,
+          reload: false
+        }
+      },
+      config: {
+        files: ['gruntfile.js'],
         tasks: ['build'],
         options: {
           spawn : true,
@@ -68,8 +81,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-inject');
   grunt.loadNpmTasks('grunt-exec');
-  grunt.registerTask("default", ["build","watch"]);
-  grunt.registerTask("build", ["exec:generateProto","browserify","uglify","inject"]);
+  grunt.registerTask("default", ["exec:generateProto","build","watch"]);
+  grunt.registerTask("build", ["browserify","uglify"]);
 };
