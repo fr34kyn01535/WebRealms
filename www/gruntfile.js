@@ -5,10 +5,6 @@ module.exports = function(grunt) {
             src: ['src/game/*.ts'],
             dest: 'dist/bundle.js',
         },
-        dist: {
-            src: ['node_modules/phaser-ce/build/pixi.js','node_modules/phaser-ce/build/p2.js'],
-            dest: 'dist/dist.bundle.js',
-        },
         worker: {
             src: ['src/worker/*.ts'],
             dest: 'dist/worker.bundle.js',
@@ -30,8 +26,7 @@ module.exports = function(grunt) {
       main: {
         files: {
           'dist/bundle.min.js': ['dist/bundle.js'],
-          'dist/dist.bundle.min.js': ['dist/dist.bundle.js'],
-          'dist/worker.bundle.min.js': ['dist/worker.bundle.js'],
+          'dist/worker.bundle.min.js': ['dist/worker.bundle.js']
         }
       },
       options: {
