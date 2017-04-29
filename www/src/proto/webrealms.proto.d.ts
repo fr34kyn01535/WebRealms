@@ -221,9 +221,7 @@ export namespace webrealms {
             ROTATION = 21
         }
 
-        type HelloMessage$Properties = {
-            Session?: string;
-        };
+        type HelloMessage$Properties = {};
 
         /**
          * Constructs a new HelloMessage.
@@ -240,12 +238,6 @@ export namespace webrealms {
              * @param {webrealms.ProtocolMessage.HelloMessage$Properties=} [properties] Properties to set
              */
             constructor(properties?: webrealms.ProtocolMessage.HelloMessage$Properties);
-
-            /**
-             * HelloMessage Session.
-             * @type {string}
-             */
-            public Session: string;
 
             /**
              * Creates a new HelloMessage instance using the specified properties.

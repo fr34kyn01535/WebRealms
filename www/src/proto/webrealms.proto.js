@@ -591,7 +591,6 @@ $root.webrealms = (function() {
              * Properties of a HelloMessage.
              * @typedef webrealms.ProtocolMessage.HelloMessage$Properties
              * @type {Object}
-             * @property {string} [Session] HelloMessage Session.
              */
 
             /**
@@ -606,12 +605,6 @@ $root.webrealms = (function() {
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
-
-            /**
-             * HelloMessage Session.
-             * @type {string}
-             */
-            HelloMessage.prototype.Session = "";
 
             /**
              * Creates a new HelloMessage instance using the specified properties.
@@ -631,8 +624,6 @@ $root.webrealms = (function() {
             HelloMessage.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.Session != null && message.hasOwnProperty("Session"))
-                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Session);
                 return writer;
             };
 
@@ -661,9 +652,6 @@ $root.webrealms = (function() {
                 while (reader.pos < end) {
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
-                    case 1:
-                        message.Session = reader.string();
-                        break;
                     default:
                         reader.skipType(tag & 7);
                         break;
@@ -693,9 +681,6 @@ $root.webrealms = (function() {
             HelloMessage.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.Session != null && message.hasOwnProperty("Session"))
-                    if (!$util.isString(message.Session))
-                        return "Session: string expected";
                 return null;
             };
 
@@ -707,10 +692,7 @@ $root.webrealms = (function() {
             HelloMessage.fromObject = function fromObject(object) {
                 if (object instanceof $root.webrealms.ProtocolMessage.HelloMessage)
                     return object;
-                var message = new $root.webrealms.ProtocolMessage.HelloMessage();
-                if (object.Session != null)
-                    message.Session = String(object.Session);
-                return message;
+                return new $root.webrealms.ProtocolMessage.HelloMessage();
             };
 
             /**
@@ -728,15 +710,8 @@ $root.webrealms = (function() {
              * @param {$protobuf.ConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            HelloMessage.toObject = function toObject(message, options) {
-                if (!options)
-                    options = {};
-                var object = {};
-                if (options.defaults)
-                    object.Session = "";
-                if (message.Session != null && message.hasOwnProperty("Session"))
-                    object.Session = message.Session;
-                return object;
+            HelloMessage.toObject = function toObject() {
+                return {};
             };
 
             /**

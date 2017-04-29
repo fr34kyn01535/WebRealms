@@ -19,6 +19,7 @@ message ProtocolMessage {
   string Sender = 2;
 
   HelloMessage Hello = 13;
+  message HelloMessage { }
 
   ConnectMessage Connect = 14;
   message ConnectMessage { 
