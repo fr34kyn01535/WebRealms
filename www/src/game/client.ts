@@ -46,6 +46,16 @@ export class Client {
         }
     }
 
+    public SendPosition(x: number,y: number){
+        this.send([{
+            Type: root.webrealms.ProtocolMessage.MessageType.POSITION,
+            Position: {
+                X: x,
+                Y: y
+            }
+        }]);
+    }
+    
     public SendConnect(username: string,password: string,session: string){
         this.send({
             Type: root.webrealms.ProtocolMessage.MessageType.CONNECT,

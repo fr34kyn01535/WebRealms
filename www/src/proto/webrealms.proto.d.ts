@@ -13,10 +13,10 @@ export namespace webrealms {
         Disconnect?: webrealms.ProtocolMessage.DisconnectMessage$Properties;
         Ping?: webrealms.ProtocolMessage.PingMessage$Properties;
         Pong?: webrealms.ProtocolMessage.PongMessage$Properties;
-        Spawn?: webrealms.ProtocolMessage.SpawnMessage$Properties;
-        Unspawn?: webrealms.ProtocolMessage.UnspawnMessage$Properties;
-        Position?: webrealms.ProtocolMessage.PositionMessage$Properties;
-        Rotation?: webrealms.ProtocolMessage.RotationMessage$Properties;
+        Spawn?: webrealms.ProtocolMessage.SpawnMessage$Properties[];
+        Unspawn?: webrealms.ProtocolMessage.UnspawnMessage$Properties[];
+        Position?: webrealms.ProtocolMessage.PositionMessage$Properties[];
+        Rotation?: webrealms.ProtocolMessage.RotationMessage$Properties[];
     };
 
     /**
@@ -67,27 +67,27 @@ export namespace webrealms {
 
         /**
          * ProtocolMessage Spawn.
-         * @type {(webrealms.ProtocolMessage.SpawnMessage$Properties|null)}
+         * @type {Array.<webrealms.ProtocolMessage.SpawnMessage$Properties>}
          */
-        public Spawn: (webrealms.ProtocolMessage.SpawnMessage$Properties|null);
+        public Spawn: webrealms.ProtocolMessage.SpawnMessage$Properties[];
 
         /**
          * ProtocolMessage Unspawn.
-         * @type {(webrealms.ProtocolMessage.UnspawnMessage$Properties|null)}
+         * @type {Array.<webrealms.ProtocolMessage.UnspawnMessage$Properties>}
          */
-        public Unspawn: (webrealms.ProtocolMessage.UnspawnMessage$Properties|null);
+        public Unspawn: webrealms.ProtocolMessage.UnspawnMessage$Properties[];
 
         /**
          * ProtocolMessage Position.
-         * @type {(webrealms.ProtocolMessage.PositionMessage$Properties|null)}
+         * @type {Array.<webrealms.ProtocolMessage.PositionMessage$Properties>}
          */
-        public Position: (webrealms.ProtocolMessage.PositionMessage$Properties|null);
+        public Position: webrealms.ProtocolMessage.PositionMessage$Properties[];
 
         /**
          * ProtocolMessage Rotation.
-         * @type {(webrealms.ProtocolMessage.RotationMessage$Properties|null)}
+         * @type {Array.<webrealms.ProtocolMessage.RotationMessage$Properties>}
          */
-        public Rotation: (webrealms.ProtocolMessage.RotationMessage$Properties|null);
+        public Rotation: webrealms.ProtocolMessage.RotationMessage$Properties[];
 
         /**
          * Creates a new ProtocolMessage instance using the specified properties.

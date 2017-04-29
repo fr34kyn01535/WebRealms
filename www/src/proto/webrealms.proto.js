@@ -29,10 +29,10 @@ $root.webrealms = (function() {
          * @property {webrealms.ProtocolMessage.DisconnectMessage$Properties} [Disconnect] ProtocolMessage Disconnect.
          * @property {webrealms.ProtocolMessage.PingMessage$Properties} [Ping] ProtocolMessage Ping.
          * @property {webrealms.ProtocolMessage.PongMessage$Properties} [Pong] ProtocolMessage Pong.
-         * @property {webrealms.ProtocolMessage.SpawnMessage$Properties} [Spawn] ProtocolMessage Spawn.
-         * @property {webrealms.ProtocolMessage.UnspawnMessage$Properties} [Unspawn] ProtocolMessage Unspawn.
-         * @property {webrealms.ProtocolMessage.PositionMessage$Properties} [Position] ProtocolMessage Position.
-         * @property {webrealms.ProtocolMessage.RotationMessage$Properties} [Rotation] ProtocolMessage Rotation.
+         * @property {Array.<webrealms.ProtocolMessage.SpawnMessage$Properties>} [Spawn] ProtocolMessage Spawn.
+         * @property {Array.<webrealms.ProtocolMessage.UnspawnMessage$Properties>} [Unspawn] ProtocolMessage Unspawn.
+         * @property {Array.<webrealms.ProtocolMessage.PositionMessage$Properties>} [Position] ProtocolMessage Position.
+         * @property {Array.<webrealms.ProtocolMessage.RotationMessage$Properties>} [Rotation] ProtocolMessage Rotation.
          */
 
         /**
@@ -42,6 +42,10 @@ $root.webrealms = (function() {
          * @param {webrealms.ProtocolMessage$Properties=} [properties] Properties to set
          */
         function ProtocolMessage(properties) {
+            this.Spawn = [];
+            this.Unspawn = [];
+            this.Position = [];
+            this.Rotation = [];
             if (properties)
                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -80,27 +84,27 @@ $root.webrealms = (function() {
 
         /**
          * ProtocolMessage Spawn.
-         * @type {(webrealms.ProtocolMessage.SpawnMessage$Properties|null)}
+         * @type {Array.<webrealms.ProtocolMessage.SpawnMessage$Properties>}
          */
-        ProtocolMessage.prototype.Spawn = null;
+        ProtocolMessage.prototype.Spawn = $util.emptyArray;
 
         /**
          * ProtocolMessage Unspawn.
-         * @type {(webrealms.ProtocolMessage.UnspawnMessage$Properties|null)}
+         * @type {Array.<webrealms.ProtocolMessage.UnspawnMessage$Properties>}
          */
-        ProtocolMessage.prototype.Unspawn = null;
+        ProtocolMessage.prototype.Unspawn = $util.emptyArray;
 
         /**
          * ProtocolMessage Position.
-         * @type {(webrealms.ProtocolMessage.PositionMessage$Properties|null)}
+         * @type {Array.<webrealms.ProtocolMessage.PositionMessage$Properties>}
          */
-        ProtocolMessage.prototype.Position = null;
+        ProtocolMessage.prototype.Position = $util.emptyArray;
 
         /**
          * ProtocolMessage Rotation.
-         * @type {(webrealms.ProtocolMessage.RotationMessage$Properties|null)}
+         * @type {Array.<webrealms.ProtocolMessage.RotationMessage$Properties>}
          */
-        ProtocolMessage.prototype.Rotation = null;
+        ProtocolMessage.prototype.Rotation = $util.emptyArray;
 
         /**
          * Creates a new ProtocolMessage instance using the specified properties.
@@ -130,14 +134,18 @@ $root.webrealms = (function() {
                 $root.webrealms.ProtocolMessage.PingMessage.encode(message.Ping, writer.uint32(/* id 16, wireType 2 =*/130).fork()).ldelim();
             if (message.Pong != null && message.hasOwnProperty("Pong"))
                 $root.webrealms.ProtocolMessage.PongMessage.encode(message.Pong, writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
-            if (message.Spawn != null && message.hasOwnProperty("Spawn"))
-                $root.webrealms.ProtocolMessage.SpawnMessage.encode(message.Spawn, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
-            if (message.Unspawn != null && message.hasOwnProperty("Unspawn"))
-                $root.webrealms.ProtocolMessage.UnspawnMessage.encode(message.Unspawn, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
-            if (message.Position != null && message.hasOwnProperty("Position"))
-                $root.webrealms.ProtocolMessage.PositionMessage.encode(message.Position, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
-            if (message.Rotation != null && message.hasOwnProperty("Rotation"))
-                $root.webrealms.ProtocolMessage.RotationMessage.encode(message.Rotation, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+            if (message.Spawn != null && message.Spawn.length)
+                for (var i = 0; i < message.Spawn.length; ++i)
+                    $root.webrealms.ProtocolMessage.SpawnMessage.encode(message.Spawn[i], writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
+            if (message.Unspawn != null && message.Unspawn.length)
+                for (var i = 0; i < message.Unspawn.length; ++i)
+                    $root.webrealms.ProtocolMessage.UnspawnMessage.encode(message.Unspawn[i], writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
+            if (message.Position != null && message.Position.length)
+                for (var i = 0; i < message.Position.length; ++i)
+                    $root.webrealms.ProtocolMessage.PositionMessage.encode(message.Position[i], writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
+            if (message.Rotation != null && message.Rotation.length)
+                for (var i = 0; i < message.Rotation.length; ++i)
+                    $root.webrealms.ProtocolMessage.RotationMessage.encode(message.Rotation[i], writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
             return writer;
         };
 
@@ -182,16 +190,24 @@ $root.webrealms = (function() {
                     message.Pong = $root.webrealms.ProtocolMessage.PongMessage.decode(reader, reader.uint32());
                     break;
                 case 18:
-                    message.Spawn = $root.webrealms.ProtocolMessage.SpawnMessage.decode(reader, reader.uint32());
+                    if (!(message.Spawn && message.Spawn.length))
+                        message.Spawn = [];
+                    message.Spawn.push($root.webrealms.ProtocolMessage.SpawnMessage.decode(reader, reader.uint32()));
                     break;
                 case 19:
-                    message.Unspawn = $root.webrealms.ProtocolMessage.UnspawnMessage.decode(reader, reader.uint32());
+                    if (!(message.Unspawn && message.Unspawn.length))
+                        message.Unspawn = [];
+                    message.Unspawn.push($root.webrealms.ProtocolMessage.UnspawnMessage.decode(reader, reader.uint32()));
                     break;
                 case 20:
-                    message.Position = $root.webrealms.ProtocolMessage.PositionMessage.decode(reader, reader.uint32());
+                    if (!(message.Position && message.Position.length))
+                        message.Position = [];
+                    message.Position.push($root.webrealms.ProtocolMessage.PositionMessage.decode(reader, reader.uint32()));
                     break;
                 case 21:
-                    message.Rotation = $root.webrealms.ProtocolMessage.RotationMessage.decode(reader, reader.uint32());
+                    if (!(message.Rotation && message.Rotation.length))
+                        message.Rotation = [];
+                    message.Rotation.push($root.webrealms.ProtocolMessage.RotationMessage.decode(reader, reader.uint32()));
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -258,24 +274,40 @@ $root.webrealms = (function() {
                     return "Pong." + error;
             }
             if (message.Spawn != null && message.hasOwnProperty("Spawn")) {
-                var error = $root.webrealms.ProtocolMessage.SpawnMessage.verify(message.Spawn);
-                if (error)
-                    return "Spawn." + error;
+                if (!Array.isArray(message.Spawn))
+                    return "Spawn: array expected";
+                for (var i = 0; i < message.Spawn.length; ++i) {
+                    var error = $root.webrealms.ProtocolMessage.SpawnMessage.verify(message.Spawn[i]);
+                    if (error)
+                        return "Spawn." + error;
+                }
             }
             if (message.Unspawn != null && message.hasOwnProperty("Unspawn")) {
-                var error = $root.webrealms.ProtocolMessage.UnspawnMessage.verify(message.Unspawn);
-                if (error)
-                    return "Unspawn." + error;
+                if (!Array.isArray(message.Unspawn))
+                    return "Unspawn: array expected";
+                for (var i = 0; i < message.Unspawn.length; ++i) {
+                    var error = $root.webrealms.ProtocolMessage.UnspawnMessage.verify(message.Unspawn[i]);
+                    if (error)
+                        return "Unspawn." + error;
+                }
             }
             if (message.Position != null && message.hasOwnProperty("Position")) {
-                var error = $root.webrealms.ProtocolMessage.PositionMessage.verify(message.Position);
-                if (error)
-                    return "Position." + error;
+                if (!Array.isArray(message.Position))
+                    return "Position: array expected";
+                for (var i = 0; i < message.Position.length; ++i) {
+                    var error = $root.webrealms.ProtocolMessage.PositionMessage.verify(message.Position[i]);
+                    if (error)
+                        return "Position." + error;
+                }
             }
             if (message.Rotation != null && message.hasOwnProperty("Rotation")) {
-                var error = $root.webrealms.ProtocolMessage.RotationMessage.verify(message.Rotation);
-                if (error)
-                    return "Rotation." + error;
+                if (!Array.isArray(message.Rotation))
+                    return "Rotation: array expected";
+                for (var i = 0; i < message.Rotation.length; ++i) {
+                    var error = $root.webrealms.ProtocolMessage.RotationMessage.verify(message.Rotation[i]);
+                    if (error)
+                        return "Rotation." + error;
+                }
             }
             return null;
         };
@@ -347,25 +379,45 @@ $root.webrealms = (function() {
                     throw TypeError(".webrealms.ProtocolMessage.Pong: object expected");
                 message.Pong = $root.webrealms.ProtocolMessage.PongMessage.fromObject(object.Pong);
             }
-            if (object.Spawn != null) {
-                if (typeof object.Spawn !== "object")
-                    throw TypeError(".webrealms.ProtocolMessage.Spawn: object expected");
-                message.Spawn = $root.webrealms.ProtocolMessage.SpawnMessage.fromObject(object.Spawn);
+            if (object.Spawn) {
+                if (!Array.isArray(object.Spawn))
+                    throw TypeError(".webrealms.ProtocolMessage.Spawn: array expected");
+                message.Spawn = [];
+                for (var i = 0; i < object.Spawn.length; ++i) {
+                    if (typeof object.Spawn[i] !== "object")
+                        throw TypeError(".webrealms.ProtocolMessage.Spawn: object expected");
+                    message.Spawn[i] = $root.webrealms.ProtocolMessage.SpawnMessage.fromObject(object.Spawn[i]);
+                }
             }
-            if (object.Unspawn != null) {
-                if (typeof object.Unspawn !== "object")
-                    throw TypeError(".webrealms.ProtocolMessage.Unspawn: object expected");
-                message.Unspawn = $root.webrealms.ProtocolMessage.UnspawnMessage.fromObject(object.Unspawn);
+            if (object.Unspawn) {
+                if (!Array.isArray(object.Unspawn))
+                    throw TypeError(".webrealms.ProtocolMessage.Unspawn: array expected");
+                message.Unspawn = [];
+                for (var i = 0; i < object.Unspawn.length; ++i) {
+                    if (typeof object.Unspawn[i] !== "object")
+                        throw TypeError(".webrealms.ProtocolMessage.Unspawn: object expected");
+                    message.Unspawn[i] = $root.webrealms.ProtocolMessage.UnspawnMessage.fromObject(object.Unspawn[i]);
+                }
             }
-            if (object.Position != null) {
-                if (typeof object.Position !== "object")
-                    throw TypeError(".webrealms.ProtocolMessage.Position: object expected");
-                message.Position = $root.webrealms.ProtocolMessage.PositionMessage.fromObject(object.Position);
+            if (object.Position) {
+                if (!Array.isArray(object.Position))
+                    throw TypeError(".webrealms.ProtocolMessage.Position: array expected");
+                message.Position = [];
+                for (var i = 0; i < object.Position.length; ++i) {
+                    if (typeof object.Position[i] !== "object")
+                        throw TypeError(".webrealms.ProtocolMessage.Position: object expected");
+                    message.Position[i] = $root.webrealms.ProtocolMessage.PositionMessage.fromObject(object.Position[i]);
+                }
             }
-            if (object.Rotation != null) {
-                if (typeof object.Rotation !== "object")
-                    throw TypeError(".webrealms.ProtocolMessage.Rotation: object expected");
-                message.Rotation = $root.webrealms.ProtocolMessage.RotationMessage.fromObject(object.Rotation);
+            if (object.Rotation) {
+                if (!Array.isArray(object.Rotation))
+                    throw TypeError(".webrealms.ProtocolMessage.Rotation: array expected");
+                message.Rotation = [];
+                for (var i = 0; i < object.Rotation.length; ++i) {
+                    if (typeof object.Rotation[i] !== "object")
+                        throw TypeError(".webrealms.ProtocolMessage.Rotation: object expected");
+                    message.Rotation[i] = $root.webrealms.ProtocolMessage.RotationMessage.fromObject(object.Rotation[i]);
+                }
             }
             return message;
         };
@@ -389,16 +441,18 @@ $root.webrealms = (function() {
             if (!options)
                 options = {};
             var object = {};
+            if (options.arrays || options.defaults) {
+                object.Spawn = [];
+                object.Unspawn = [];
+                object.Position = [];
+                object.Rotation = [];
+            }
             if (options.defaults) {
                 object.Type = options.enums === String ? "NONE" : 0;
                 object.Connect = null;
                 object.Disconnect = null;
                 object.Ping = null;
                 object.Pong = null;
-                object.Spawn = null;
-                object.Unspawn = null;
-                object.Position = null;
-                object.Rotation = null;
             }
             if (message.Type != null && message.hasOwnProperty("Type"))
                 object.Type = options.enums === String ? $root.webrealms.ProtocolMessage.MessageType[message.Type] : message.Type;
@@ -410,14 +464,26 @@ $root.webrealms = (function() {
                 object.Ping = $root.webrealms.ProtocolMessage.PingMessage.toObject(message.Ping, options);
             if (message.Pong != null && message.hasOwnProperty("Pong"))
                 object.Pong = $root.webrealms.ProtocolMessage.PongMessage.toObject(message.Pong, options);
-            if (message.Spawn != null && message.hasOwnProperty("Spawn"))
-                object.Spawn = $root.webrealms.ProtocolMessage.SpawnMessage.toObject(message.Spawn, options);
-            if (message.Unspawn != null && message.hasOwnProperty("Unspawn"))
-                object.Unspawn = $root.webrealms.ProtocolMessage.UnspawnMessage.toObject(message.Unspawn, options);
-            if (message.Position != null && message.hasOwnProperty("Position"))
-                object.Position = $root.webrealms.ProtocolMessage.PositionMessage.toObject(message.Position, options);
-            if (message.Rotation != null && message.hasOwnProperty("Rotation"))
-                object.Rotation = $root.webrealms.ProtocolMessage.RotationMessage.toObject(message.Rotation, options);
+            if (message.Spawn && message.Spawn.length) {
+                object.Spawn = [];
+                for (var j = 0; j < message.Spawn.length; ++j)
+                    object.Spawn[j] = $root.webrealms.ProtocolMessage.SpawnMessage.toObject(message.Spawn[j], options);
+            }
+            if (message.Unspawn && message.Unspawn.length) {
+                object.Unspawn = [];
+                for (var j = 0; j < message.Unspawn.length; ++j)
+                    object.Unspawn[j] = $root.webrealms.ProtocolMessage.UnspawnMessage.toObject(message.Unspawn[j], options);
+            }
+            if (message.Position && message.Position.length) {
+                object.Position = [];
+                for (var j = 0; j < message.Position.length; ++j)
+                    object.Position[j] = $root.webrealms.ProtocolMessage.PositionMessage.toObject(message.Position[j], options);
+            }
+            if (message.Rotation && message.Rotation.length) {
+                object.Rotation = [];
+                for (var j = 0; j < message.Rotation.length; ++j)
+                    object.Rotation[j] = $root.webrealms.ProtocolMessage.RotationMessage.toObject(message.Rotation[j], options);
+            }
             return object;
         };
 

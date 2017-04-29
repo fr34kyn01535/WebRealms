@@ -86,6 +86,8 @@ export class Level extends Phaser.State {
 
     public update(){
         if(this.player.alive){
+            this.connection.SendPosition(this.player.position.x,this.player.position.y);
+
             if (this.cursor.left.isDown) {
                 this.player.body.velocity.x = -200;
             }
