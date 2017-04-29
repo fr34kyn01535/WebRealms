@@ -5,6 +5,7 @@ message ProtocolMessage {
   MessageType Type = 1;
   enum MessageType {
     NONE = 0;
+    HELLO = 13;
     CONNECT = 14;
     DISCONNECT = 15;
     PING = 16;
@@ -15,11 +16,14 @@ message ProtocolMessage {
     ROTATION = 21;
   }
 
+  string Sender = 2;
+
+  HelloMessage Hello = 13;
+
   ConnectMessage Connect = 14;
   message ConnectMessage { 
     string Username = 1;
     string Password = 2;
-    string Session = 3;
   }
 
   DisconnectMessage Disconnect = 15;

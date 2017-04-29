@@ -9,6 +9,8 @@ export namespace webrealms {
 
     type ProtocolMessage$Properties = {
         Type?: webrealms.ProtocolMessage.MessageType;
+        Sender?: string;
+        Hello?: webrealms.ProtocolMessage.HelloMessage$Properties;
         Connect?: webrealms.ProtocolMessage.ConnectMessage$Properties;
         Disconnect?: webrealms.ProtocolMessage.DisconnectMessage$Properties;
         Ping?: webrealms.ProtocolMessage.PingMessage$Properties;
@@ -40,6 +42,18 @@ export namespace webrealms {
          * @type {webrealms.ProtocolMessage.MessageType}
          */
         public Type: webrealms.ProtocolMessage.MessageType;
+
+        /**
+         * ProtocolMessage Sender.
+         * @type {string}
+         */
+        public Sender: string;
+
+        /**
+         * ProtocolMessage Hello.
+         * @type {(webrealms.ProtocolMessage.HelloMessage$Properties|null)}
+         */
+        public Hello: (webrealms.ProtocolMessage.HelloMessage$Properties|null);
 
         /**
          * ProtocolMessage Connect.
@@ -184,6 +198,7 @@ export namespace webrealms {
          * @memberof webrealms.ProtocolMessage
          * @enum {number}
          * @property {number} NONE=0 NONE value
+         * @property {number} HELLO=13 HELLO value
          * @property {number} CONNECT=14 CONNECT value
          * @property {number} DISCONNECT=15 DISCONNECT value
          * @property {number} PING=16 PING value
@@ -195,6 +210,7 @@ export namespace webrealms {
          */
         enum MessageType {
             NONE = 0,
+            HELLO = 13,
             CONNECT = 14,
             DISCONNECT = 15,
             PING = 16,
@@ -205,10 +221,122 @@ export namespace webrealms {
             ROTATION = 21
         }
 
+        type HelloMessage$Properties = {
+            Session?: string;
+        };
+
+        /**
+         * Constructs a new HelloMessage.
+         * @exports webrealms.ProtocolMessage.HelloMessage
+         * @constructor
+         * @param {webrealms.ProtocolMessage.HelloMessage$Properties=} [properties] Properties to set
+         */
+        class HelloMessage {
+
+            /**
+             * Constructs a new HelloMessage.
+             * @exports webrealms.ProtocolMessage.HelloMessage
+             * @constructor
+             * @param {webrealms.ProtocolMessage.HelloMessage$Properties=} [properties] Properties to set
+             */
+            constructor(properties?: webrealms.ProtocolMessage.HelloMessage$Properties);
+
+            /**
+             * HelloMessage Session.
+             * @type {string}
+             */
+            public Session: string;
+
+            /**
+             * Creates a new HelloMessage instance using the specified properties.
+             * @param {webrealms.ProtocolMessage.HelloMessage$Properties=} [properties] Properties to set
+             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage instance
+             */
+            public static create(properties?: webrealms.ProtocolMessage.HelloMessage$Properties): webrealms.ProtocolMessage.HelloMessage;
+
+            /**
+             * Encodes the specified HelloMessage message. Does not implicitly {@link webrealms.ProtocolMessage.HelloMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.HelloMessage$Properties} message HelloMessage message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            public static encode(message: webrealms.ProtocolMessage.HelloMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified HelloMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.HelloMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.HelloMessage$Properties} message HelloMessage message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            public static encodeDelimited(message: webrealms.ProtocolMessage.HelloMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a HelloMessage message from the specified reader or buffer.
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): webrealms.ProtocolMessage.HelloMessage;
+
+            /**
+             * Decodes a HelloMessage message from the specified reader or buffer, length delimited.
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): webrealms.ProtocolMessage.HelloMessage;
+
+            /**
+             * Verifies a HelloMessage message.
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {?string} `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): string;
+
+            /**
+             * Creates a HelloMessage message from a plain object. Also converts values to their respective internal types.
+             * @param {Object.<string,*>} object Plain object
+             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             */
+            public static fromObject(object: { [k: string]: any }): webrealms.ProtocolMessage.HelloMessage;
+
+            /**
+             * Creates a HelloMessage message from a plain object. Also converts values to their respective internal types.
+             * This is an alias of {@link webrealms.ProtocolMessage.HelloMessage.fromObject}.
+             * @function
+             * @param {Object.<string,*>} object Plain object
+             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             */
+            public static from(object: { [k: string]: any }): webrealms.ProtocolMessage.HelloMessage;
+
+            /**
+             * Creates a plain object from a HelloMessage message. Also converts values to other types if specified.
+             * @param {webrealms.ProtocolMessage.HelloMessage} message HelloMessage
+             * @param {$protobuf.ConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            public static toObject(message: webrealms.ProtocolMessage.HelloMessage, options?: $protobuf.ConversionOptions): { [k: string]: any };
+
+            /**
+             * Creates a plain object from this HelloMessage message. Also converts values to other types if specified.
+             * @param {$protobuf.ConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            public toObject(options?: $protobuf.ConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this HelloMessage to JSON.
+             * @returns {Object.<string,*>} JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
+
         type ConnectMessage$Properties = {
             Username?: string;
             Password?: string;
-            Session?: string;
         };
 
         /**
@@ -238,12 +366,6 @@ export namespace webrealms {
              * @type {string}
              */
             public Password: string;
-
-            /**
-             * ConnectMessage Session.
-             * @type {string}
-             */
-            public Session: string;
 
             /**
              * Creates a new ConnectMessage instance using the specified properties.
@@ -868,7 +990,6 @@ export namespace webrealms {
         type PositionMessage$Properties = {
             X?: number;
             Y?: number;
-            Z?: number;
         };
 
         /**
@@ -898,12 +1019,6 @@ export namespace webrealms {
              * @type {number}
              */
             public Y: number;
-
-            /**
-             * PositionMessage Z.
-             * @type {number}
-             */
-            public Z: number;
 
             /**
              * Creates a new PositionMessage instance using the specified properties.
@@ -994,9 +1109,6 @@ export namespace webrealms {
 
         type RotationMessage$Properties = {
             X?: number;
-            Y?: number;
-            Z?: number;
-            W?: number;
         };
 
         /**
@@ -1020,24 +1132,6 @@ export namespace webrealms {
              * @type {number}
              */
             public X: number;
-
-            /**
-             * RotationMessage Y.
-             * @type {number}
-             */
-            public Y: number;
-
-            /**
-             * RotationMessage Z.
-             * @type {number}
-             */
-            public Z: number;
-
-            /**
-             * RotationMessage W.
-             * @type {number}
-             */
-            public W: number;
 
             /**
              * Creates a new RotationMessage instance using the specified properties.

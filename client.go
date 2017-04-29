@@ -13,6 +13,7 @@ import (
 	"./webrealms"
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/websocket"
+	"github.com/nu7hatch/gouuid"
 )
 
 const (
@@ -75,23 +76,37 @@ func (c *Client) readPump() {
 		err = proto.Unmarshal(p, message)
 		if err != nil {
 			fmt.Println("err ", err)
-			return
 		}
+		//	if(err.sender != )
 
-		fmt.Println("Received message of type: ", webrealms.ProtocolMessage_MessageType_name[int32(message.Type)])
+		//fmt.Println("Received message of type: ", webrealms.ProtocolMessage_MessageType_name[int32(message.Type)])
 
 		switch message.Type {
 		case webrealms.ProtocolMessage_CONNECT:
 			fmt.Println(message.Connect.Username)
-			c.hub.broadcast <- buildSpawnMessage(message.Connect.Username)
+			uuid, _ := uuid.NewV4()
+			id := uuid.String()
+			c.send <- buildHelloMessage(id)
+			c.hub.broadcast <- buildSpawnMessage(message.Connect.Username, id)
+		case webrealms.ProtocolMessage_POSITION:
+			c.hub.broadcast <- p
 		}
 
 	}
 }
 
-func buildSpawnMessage(name string) []byte {
+func buildHelloMessage(sender string) []byte {
 	msg := &webrealms.ProtocolMessage{
-		Type: webrealms.ProtocolMessage_SPAWN,
+		Type:   webrealms.ProtocolMessage_HELLO,
+		Sender: sender,
+	}
+	return build(msg)
+}
+
+func buildSpawnMessage(name string, sender string) []byte {
+	msg := &webrealms.ProtocolMessage{
+		Type:   webrealms.ProtocolMessage_SPAWN,
+		Sender: sender,
 		Spawn: []*webrealms.ProtocolMessage_SpawnMessage{
 			&webrealms.ProtocolMessage_SpawnMessage{
 				Name: name,
@@ -131,7 +146,7 @@ func (c *Client) writePump() {
 				return
 			}
 
-			w, err := c.conn.NextWriter(websocket.TextMessage)
+			w, err := c.conn.NextWriter(websocket.BinaryMessage)
 			if err != nil {
 				return
 			}

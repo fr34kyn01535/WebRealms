@@ -25,6 +25,8 @@ $root.webrealms = (function() {
          * @typedef webrealms.ProtocolMessage$Properties
          * @type {Object}
          * @property {webrealms.ProtocolMessage.MessageType} [Type] ProtocolMessage Type.
+         * @property {string} [Sender] ProtocolMessage Sender.
+         * @property {webrealms.ProtocolMessage.HelloMessage$Properties} [Hello] ProtocolMessage Hello.
          * @property {webrealms.ProtocolMessage.ConnectMessage$Properties} [Connect] ProtocolMessage Connect.
          * @property {webrealms.ProtocolMessage.DisconnectMessage$Properties} [Disconnect] ProtocolMessage Disconnect.
          * @property {webrealms.ProtocolMessage.PingMessage$Properties} [Ping] ProtocolMessage Ping.
@@ -57,6 +59,18 @@ $root.webrealms = (function() {
          * @type {webrealms.ProtocolMessage.MessageType}
          */
         ProtocolMessage.prototype.Type = 0;
+
+        /**
+         * ProtocolMessage Sender.
+         * @type {string}
+         */
+        ProtocolMessage.prototype.Sender = "";
+
+        /**
+         * ProtocolMessage Hello.
+         * @type {(webrealms.ProtocolMessage.HelloMessage$Properties|null)}
+         */
+        ProtocolMessage.prototype.Hello = null;
 
         /**
          * ProtocolMessage Connect.
@@ -126,6 +140,10 @@ $root.webrealms = (function() {
                 writer = $Writer.create();
             if (message.Type != null && message.hasOwnProperty("Type"))
                 writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.Type);
+            if (message.Sender != null && message.hasOwnProperty("Sender"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.Sender);
+            if (message.Hello != null && message.hasOwnProperty("Hello"))
+                $root.webrealms.ProtocolMessage.HelloMessage.encode(message.Hello, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
             if (message.Connect != null && message.hasOwnProperty("Connect"))
                 $root.webrealms.ProtocolMessage.ConnectMessage.encode(message.Connect, writer.uint32(/* id 14, wireType 2 =*/114).fork()).ldelim();
             if (message.Disconnect != null && message.hasOwnProperty("Disconnect"))
@@ -176,6 +194,12 @@ $root.webrealms = (function() {
                 switch (tag >>> 3) {
                 case 1:
                     message.Type = reader.uint32();
+                    break;
+                case 2:
+                    message.Sender = reader.string();
+                    break;
+                case 13:
+                    message.Hello = $root.webrealms.ProtocolMessage.HelloMessage.decode(reader, reader.uint32());
                     break;
                 case 14:
                     message.Connect = $root.webrealms.ProtocolMessage.ConnectMessage.decode(reader, reader.uint32());
@@ -243,6 +267,7 @@ $root.webrealms = (function() {
                 default:
                     return "Type: enum value expected";
                 case 0:
+                case 13:
                 case 14:
                 case 15:
                 case 16:
@@ -253,6 +278,14 @@ $root.webrealms = (function() {
                 case 21:
                     break;
                 }
+            if (message.Sender != null && message.hasOwnProperty("Sender"))
+                if (!$util.isString(message.Sender))
+                    return "Sender: string expected";
+            if (message.Hello != null && message.hasOwnProperty("Hello")) {
+                var error = $root.webrealms.ProtocolMessage.HelloMessage.verify(message.Hello);
+                if (error)
+                    return "Hello." + error;
+            }
             if (message.Connect != null && message.hasOwnProperty("Connect")) {
                 var error = $root.webrealms.ProtocolMessage.ConnectMessage.verify(message.Connect);
                 if (error)
@@ -326,6 +359,10 @@ $root.webrealms = (function() {
             case 0:
                 message.Type = 0;
                 break;
+            case "HELLO":
+            case 13:
+                message.Type = 13;
+                break;
             case "CONNECT":
             case 14:
                 message.Type = 14;
@@ -358,6 +395,13 @@ $root.webrealms = (function() {
             case 21:
                 message.Type = 21;
                 break;
+            }
+            if (object.Sender != null)
+                message.Sender = String(object.Sender);
+            if (object.Hello != null) {
+                if (typeof object.Hello !== "object")
+                    throw TypeError(".webrealms.ProtocolMessage.Hello: object expected");
+                message.Hello = $root.webrealms.ProtocolMessage.HelloMessage.fromObject(object.Hello);
             }
             if (object.Connect != null) {
                 if (typeof object.Connect !== "object")
@@ -449,6 +493,8 @@ $root.webrealms = (function() {
             }
             if (options.defaults) {
                 object.Type = options.enums === String ? "NONE" : 0;
+                object.Sender = "";
+                object.Hello = null;
                 object.Connect = null;
                 object.Disconnect = null;
                 object.Ping = null;
@@ -456,6 +502,10 @@ $root.webrealms = (function() {
             }
             if (message.Type != null && message.hasOwnProperty("Type"))
                 object.Type = options.enums === String ? $root.webrealms.ProtocolMessage.MessageType[message.Type] : message.Type;
+            if (message.Sender != null && message.hasOwnProperty("Sender"))
+                object.Sender = message.Sender;
+            if (message.Hello != null && message.hasOwnProperty("Hello"))
+                object.Hello = $root.webrealms.ProtocolMessage.HelloMessage.toObject(message.Hello, options);
             if (message.Connect != null && message.hasOwnProperty("Connect"))
                 object.Connect = $root.webrealms.ProtocolMessage.ConnectMessage.toObject(message.Connect, options);
             if (message.Disconnect != null && message.hasOwnProperty("Disconnect"))
@@ -510,6 +560,7 @@ $root.webrealms = (function() {
          * @memberof webrealms.ProtocolMessage
          * @enum {number}
          * @property {number} NONE=0 NONE value
+         * @property {number} HELLO=13 HELLO value
          * @property {number} CONNECT=14 CONNECT value
          * @property {number} DISCONNECT=15 DISCONNECT value
          * @property {number} PING=16 PING value
@@ -522,6 +573,7 @@ $root.webrealms = (function() {
         ProtocolMessage.MessageType = (function() {
             var valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "NONE"] = 0;
+            values[valuesById[13] = "HELLO"] = 13;
             values[valuesById[14] = "CONNECT"] = 14;
             values[valuesById[15] = "DISCONNECT"] = 15;
             values[valuesById[16] = "PING"] = 16;
@@ -533,6 +585,180 @@ $root.webrealms = (function() {
             return values;
         })();
 
+        ProtocolMessage.HelloMessage = (function() {
+
+            /**
+             * Properties of a HelloMessage.
+             * @typedef webrealms.ProtocolMessage.HelloMessage$Properties
+             * @type {Object}
+             * @property {string} [Session] HelloMessage Session.
+             */
+
+            /**
+             * Constructs a new HelloMessage.
+             * @exports webrealms.ProtocolMessage.HelloMessage
+             * @constructor
+             * @param {webrealms.ProtocolMessage.HelloMessage$Properties=} [properties] Properties to set
+             */
+            function HelloMessage(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * HelloMessage Session.
+             * @type {string}
+             */
+            HelloMessage.prototype.Session = "";
+
+            /**
+             * Creates a new HelloMessage instance using the specified properties.
+             * @param {webrealms.ProtocolMessage.HelloMessage$Properties=} [properties] Properties to set
+             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage instance
+             */
+            HelloMessage.create = function create(properties) {
+                return new HelloMessage(properties);
+            };
+
+            /**
+             * Encodes the specified HelloMessage message. Does not implicitly {@link webrealms.ProtocolMessage.HelloMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.HelloMessage$Properties} message HelloMessage message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            HelloMessage.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.Session != null && message.hasOwnProperty("Session"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.Session);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified HelloMessage message, length delimited. Does not implicitly {@link webrealms.ProtocolMessage.HelloMessage.verify|verify} messages.
+             * @param {webrealms.ProtocolMessage.HelloMessage$Properties} message HelloMessage message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            HelloMessage.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a HelloMessage message from the specified reader or buffer.
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            HelloMessage.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.webrealms.ProtocolMessage.HelloMessage();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.Session = reader.string();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a HelloMessage message from the specified reader or buffer, length delimited.
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            HelloMessage.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a HelloMessage message.
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {?string} `null` if valid, otherwise the reason why it is not
+             */
+            HelloMessage.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.Session != null && message.hasOwnProperty("Session"))
+                    if (!$util.isString(message.Session))
+                        return "Session: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a HelloMessage message from a plain object. Also converts values to their respective internal types.
+             * @param {Object.<string,*>} object Plain object
+             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             */
+            HelloMessage.fromObject = function fromObject(object) {
+                if (object instanceof $root.webrealms.ProtocolMessage.HelloMessage)
+                    return object;
+                var message = new $root.webrealms.ProtocolMessage.HelloMessage();
+                if (object.Session != null)
+                    message.Session = String(object.Session);
+                return message;
+            };
+
+            /**
+             * Creates a HelloMessage message from a plain object. Also converts values to their respective internal types.
+             * This is an alias of {@link webrealms.ProtocolMessage.HelloMessage.fromObject}.
+             * @function
+             * @param {Object.<string,*>} object Plain object
+             * @returns {webrealms.ProtocolMessage.HelloMessage} HelloMessage
+             */
+            HelloMessage.from = HelloMessage.fromObject;
+
+            /**
+             * Creates a plain object from a HelloMessage message. Also converts values to other types if specified.
+             * @param {webrealms.ProtocolMessage.HelloMessage} message HelloMessage
+             * @param {$protobuf.ConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            HelloMessage.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.Session = "";
+                if (message.Session != null && message.hasOwnProperty("Session"))
+                    object.Session = message.Session;
+                return object;
+            };
+
+            /**
+             * Creates a plain object from this HelloMessage message. Also converts values to other types if specified.
+             * @param {$protobuf.ConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            HelloMessage.prototype.toObject = function toObject(options) {
+                return this.constructor.toObject(this, options);
+            };
+
+            /**
+             * Converts this HelloMessage to JSON.
+             * @returns {Object.<string,*>} JSON object
+             */
+            HelloMessage.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            return HelloMessage;
+        })();
+
         ProtocolMessage.ConnectMessage = (function() {
 
             /**
@@ -541,7 +767,6 @@ $root.webrealms = (function() {
              * @type {Object}
              * @property {string} [Username] ConnectMessage Username.
              * @property {string} [Password] ConnectMessage Password.
-             * @property {string} [Session] ConnectMessage Session.
              */
 
             /**
@@ -570,12 +795,6 @@ $root.webrealms = (function() {
             ConnectMessage.prototype.Password = "";
 
             /**
-             * ConnectMessage Session.
-             * @type {string}
-             */
-            ConnectMessage.prototype.Session = "";
-
-            /**
              * Creates a new ConnectMessage instance using the specified properties.
              * @param {webrealms.ProtocolMessage.ConnectMessage$Properties=} [properties] Properties to set
              * @returns {webrealms.ProtocolMessage.ConnectMessage} ConnectMessage instance
@@ -597,8 +816,6 @@ $root.webrealms = (function() {
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.Username);
                 if (message.Password != null && message.hasOwnProperty("Password"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.Password);
-                if (message.Session != null && message.hasOwnProperty("Session"))
-                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.Session);
                 return writer;
             };
 
@@ -632,9 +849,6 @@ $root.webrealms = (function() {
                         break;
                     case 2:
                         message.Password = reader.string();
-                        break;
-                    case 3:
-                        message.Session = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -671,9 +885,6 @@ $root.webrealms = (function() {
                 if (message.Password != null && message.hasOwnProperty("Password"))
                     if (!$util.isString(message.Password))
                         return "Password: string expected";
-                if (message.Session != null && message.hasOwnProperty("Session"))
-                    if (!$util.isString(message.Session))
-                        return "Session: string expected";
                 return null;
             };
 
@@ -690,8 +901,6 @@ $root.webrealms = (function() {
                     message.Username = String(object.Username);
                 if (object.Password != null)
                     message.Password = String(object.Password);
-                if (object.Session != null)
-                    message.Session = String(object.Session);
                 return message;
             };
 
@@ -717,14 +926,11 @@ $root.webrealms = (function() {
                 if (options.defaults) {
                     object.Username = "";
                     object.Password = "";
-                    object.Session = "";
                 }
                 if (message.Username != null && message.hasOwnProperty("Username"))
                     object.Username = message.Username;
                 if (message.Password != null && message.hasOwnProperty("Password"))
                     object.Password = message.Password;
-                if (message.Session != null && message.hasOwnProperty("Session"))
-                    object.Session = message.Session;
                 return object;
             };
 
@@ -1526,7 +1732,6 @@ $root.webrealms = (function() {
              * @type {Object}
              * @property {number} [X] PositionMessage X.
              * @property {number} [Y] PositionMessage Y.
-             * @property {number} [Z] PositionMessage Z.
              */
 
             /**
@@ -1555,12 +1760,6 @@ $root.webrealms = (function() {
             PositionMessage.prototype.Y = 0;
 
             /**
-             * PositionMessage Z.
-             * @type {number}
-             */
-            PositionMessage.prototype.Z = 0;
-
-            /**
              * Creates a new PositionMessage instance using the specified properties.
              * @param {webrealms.ProtocolMessage.PositionMessage$Properties=} [properties] Properties to set
              * @returns {webrealms.ProtocolMessage.PositionMessage} PositionMessage instance
@@ -1582,8 +1781,6 @@ $root.webrealms = (function() {
                     writer.uint32(/* id 1, wireType 5 =*/13).float(message.X);
                 if (message.Y != null && message.hasOwnProperty("Y"))
                     writer.uint32(/* id 2, wireType 5 =*/21).float(message.Y);
-                if (message.Z != null && message.hasOwnProperty("Z"))
-                    writer.uint32(/* id 3, wireType 5 =*/29).float(message.Z);
                 return writer;
             };
 
@@ -1617,9 +1814,6 @@ $root.webrealms = (function() {
                         break;
                     case 2:
                         message.Y = reader.float();
-                        break;
-                    case 3:
-                        message.Z = reader.float();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -1656,9 +1850,6 @@ $root.webrealms = (function() {
                 if (message.Y != null && message.hasOwnProperty("Y"))
                     if (typeof message.Y !== "number")
                         return "Y: number expected";
-                if (message.Z != null && message.hasOwnProperty("Z"))
-                    if (typeof message.Z !== "number")
-                        return "Z: number expected";
                 return null;
             };
 
@@ -1675,8 +1866,6 @@ $root.webrealms = (function() {
                     message.X = Number(object.X);
                 if (object.Y != null)
                     message.Y = Number(object.Y);
-                if (object.Z != null)
-                    message.Z = Number(object.Z);
                 return message;
             };
 
@@ -1702,14 +1891,11 @@ $root.webrealms = (function() {
                 if (options.defaults) {
                     object.X = 0;
                     object.Y = 0;
-                    object.Z = 0;
                 }
                 if (message.X != null && message.hasOwnProperty("X"))
                     object.X = message.X;
                 if (message.Y != null && message.hasOwnProperty("Y"))
                     object.Y = message.Y;
-                if (message.Z != null && message.hasOwnProperty("Z"))
-                    object.Z = message.Z;
                 return object;
             };
 
@@ -1740,9 +1926,6 @@ $root.webrealms = (function() {
              * @typedef webrealms.ProtocolMessage.RotationMessage$Properties
              * @type {Object}
              * @property {number} [X] RotationMessage X.
-             * @property {number} [Y] RotationMessage Y.
-             * @property {number} [Z] RotationMessage Z.
-             * @property {number} [W] RotationMessage W.
              */
 
             /**
@@ -1765,24 +1948,6 @@ $root.webrealms = (function() {
             RotationMessage.prototype.X = 0;
 
             /**
-             * RotationMessage Y.
-             * @type {number}
-             */
-            RotationMessage.prototype.Y = 0;
-
-            /**
-             * RotationMessage Z.
-             * @type {number}
-             */
-            RotationMessage.prototype.Z = 0;
-
-            /**
-             * RotationMessage W.
-             * @type {number}
-             */
-            RotationMessage.prototype.W = 0;
-
-            /**
              * Creates a new RotationMessage instance using the specified properties.
              * @param {webrealms.ProtocolMessage.RotationMessage$Properties=} [properties] Properties to set
              * @returns {webrealms.ProtocolMessage.RotationMessage} RotationMessage instance
@@ -1802,12 +1967,6 @@ $root.webrealms = (function() {
                     writer = $Writer.create();
                 if (message.X != null && message.hasOwnProperty("X"))
                     writer.uint32(/* id 1, wireType 5 =*/13).float(message.X);
-                if (message.Y != null && message.hasOwnProperty("Y"))
-                    writer.uint32(/* id 2, wireType 5 =*/21).float(message.Y);
-                if (message.Z != null && message.hasOwnProperty("Z"))
-                    writer.uint32(/* id 3, wireType 5 =*/29).float(message.Z);
-                if (message.W != null && message.hasOwnProperty("W"))
-                    writer.uint32(/* id 4, wireType 5 =*/37).float(message.W);
                 return writer;
             };
 
@@ -1838,15 +1997,6 @@ $root.webrealms = (function() {
                     switch (tag >>> 3) {
                     case 1:
                         message.X = reader.float();
-                        break;
-                    case 2:
-                        message.Y = reader.float();
-                        break;
-                    case 3:
-                        message.Z = reader.float();
-                        break;
-                    case 4:
-                        message.W = reader.float();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -1880,15 +2030,6 @@ $root.webrealms = (function() {
                 if (message.X != null && message.hasOwnProperty("X"))
                     if (typeof message.X !== "number")
                         return "X: number expected";
-                if (message.Y != null && message.hasOwnProperty("Y"))
-                    if (typeof message.Y !== "number")
-                        return "Y: number expected";
-                if (message.Z != null && message.hasOwnProperty("Z"))
-                    if (typeof message.Z !== "number")
-                        return "Z: number expected";
-                if (message.W != null && message.hasOwnProperty("W"))
-                    if (typeof message.W !== "number")
-                        return "W: number expected";
                 return null;
             };
 
@@ -1903,12 +2044,6 @@ $root.webrealms = (function() {
                 var message = new $root.webrealms.ProtocolMessage.RotationMessage();
                 if (object.X != null)
                     message.X = Number(object.X);
-                if (object.Y != null)
-                    message.Y = Number(object.Y);
-                if (object.Z != null)
-                    message.Z = Number(object.Z);
-                if (object.W != null)
-                    message.W = Number(object.W);
                 return message;
             };
 
@@ -1931,20 +2066,10 @@ $root.webrealms = (function() {
                 if (!options)
                     options = {};
                 var object = {};
-                if (options.defaults) {
+                if (options.defaults)
                     object.X = 0;
-                    object.Y = 0;
-                    object.Z = 0;
-                    object.W = 0;
-                }
                 if (message.X != null && message.hasOwnProperty("X"))
                     object.X = message.X;
-                if (message.Y != null && message.hasOwnProperty("Y"))
-                    object.Y = message.Y;
-                if (message.Z != null && message.hasOwnProperty("Z"))
-                    object.Z = message.Z;
-                if (message.W != null && message.hasOwnProperty("W"))
-                    object.W = message.W;
                 return object;
             };
 

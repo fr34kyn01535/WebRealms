@@ -16,7 +16,7 @@ func main() {
 		serveWs(hub, w, r)
 	})
 
-	if err := http.ListenAndServe(":8182", nil); err != nil {
+	if err := http.ListenAndServe(":80", nil); err != nil {
 		log.Fatal(err)
 	}
 }

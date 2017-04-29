@@ -4,12 +4,11 @@ import * as Phaser from 'phaser-ce';
 
 export class Main extends Phaser.Game {               
     constructor() {                        
-        super(800, 600);            
+        super(800, 600);        
         this.state.add("menu", Menu);            
         this.state.add("level", Level);            
-        this.state.start("menu");        
+        this.state.start("menu");       
     }    
-
 }
 
 var wm:Main;

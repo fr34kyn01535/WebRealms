@@ -12,17 +12,17 @@ class Client{
     public constructor(window){
         var that = this;
         let builder = this.builder = root.webrealms.ProtocolMessage;
-        let socket = this.socket = new WebSocket("ws://localhost:8182/ws");
+        let socket = this.socket = new WebSocket("ws://"+window.location.hostname+"/ws");
         window.onmessage = function(data){
              that.onmessage(data)
         };
         socket.onopen = function () {
-            postMessage(["connected"]);
             socket.binaryType = "arraybuffer";
+            postMessage(["connected"]);
         }
 
         socket.onclose = function(evt: CloseEvent) {
-            postMessage(["disconnect",evt.type]);
+            postMessage(["disconnected",evt.type]);
         }
         
         socket.onmessage = function(event) {
