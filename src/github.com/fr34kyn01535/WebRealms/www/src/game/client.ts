@@ -25,13 +25,13 @@ export class Client {
             if(name === "message"){
                 let data :main.ProtocolMessage$Properties = event.data[1];
                 if(data.Sender != that.Id){
-                    console.log("WORKER <",data);
+                    //console.log("WORKER <",data);
                     that.listeners.filter((listener)=>{ return listener.topic == data.Type}).forEach((listener)=>{
                         listener.callback(data);
                     });
                 }
             } else{
-                console.log("WORKER <",name);
+                //console.log("WORKER <",name);
                 that.listeners.filter((listener)=>{ return listener.topic == name}).forEach((listener)=>{
                     listener.callback(name,(event.data as Array<any>).splice(0,1));
                 });
@@ -46,7 +46,7 @@ export class Client {
     }
     
     private send(content: main.ProtocolMessage$Properties | string){
-        console.log("WORKER >",content);
+        //console.log("WORKER >",content);
         if(typeof content == 'string'){
             this.worker.postMessage(content);
         }else{

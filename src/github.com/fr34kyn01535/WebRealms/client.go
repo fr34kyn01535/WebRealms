@@ -90,7 +90,7 @@ func (c *Client) readPump() {
 				uuid, _ := uuid.NewV4()
 				c.id = uuid.String()
 				c.username = message.Connect.Username
-				c.position = Position{x: 90, y: 70}
+				c.position = Position{x: 250, y: 160}
 				c.send <- buildHelloMessage(c.id, c.position.x, c.position.y)
 				for client := range c.hub.clients {
 					c.send <- buildSpawnMessage(client.username, client.id, client.position.x, client.position.y)

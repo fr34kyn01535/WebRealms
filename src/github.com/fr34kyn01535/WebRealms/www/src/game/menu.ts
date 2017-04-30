@@ -8,7 +8,7 @@ export class Menu extends Phaser.State {
         this.state.start("level");   
     }
     preload() {
-        this.game.load.image('white', 'white.png');
+        this.game.load.image('square', 'assets/square.png');
     }        
     render() { }
     update() { }
