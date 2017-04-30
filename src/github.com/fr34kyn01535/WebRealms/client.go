@@ -29,14 +29,14 @@ const (
 	maxMessageSize = 512
 )
 
-var (
-	newline = []byte{'\n'}
-	space   = []byte{' '}
-)
-
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+}
+
+type Position struct {
+	x float32
+	y float32
 }
 
 // Client is a middleman between the websocket connection and the hub.
@@ -45,6 +45,10 @@ type Client struct {
 
 	// The websocket connection.
 	conn *websocket.Conn
+
+	position Position
+	id       string
+	username string
 
 	// Buffered channel of outbound messages.
 	send chan []byte
@@ -67,56 +71,83 @@ func (c *Client) readPump() {
 		_, p, err := c.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
+				c.hub.broadcast <- buildUnspawnMessage(c.id)
 				log.Printf("error: %v", err)
 			}
 			break
 		}
-		message := &ProtocolMessage{}
-		err = proto.Unmarshal(p, message)
+		packet := &ProtocolPacket{}
+		err = proto.Unmarshal(p, packet)
 		if err != nil {
 			fmt.Println("err ", err)
 		}
-		//	if(err.sender != )
 
-		//fmt.Println("Received message of type: ", ProtocolMessage_MessageType_name[int32(message.Type)])
+		for _, message := range packet.Message {
 
-		switch message.Type {
-		case ProtocolMessage_CONNECT:
-			fmt.Println(message.Connect.Username)
-			uuid, _ := uuid.NewV4()
-			id := uuid.String()
-			c.send <- buildHelloMessage(id)
-			c.hub.broadcast <- buildSpawnMessage(message.Connect.Username, id)
-		case ProtocolMessage_POSITION:
-			c.hub.broadcast <- p
+			fmt.Println("Received message of type: ", ProtocolMessage_MessageType_name[int32(message.Type)])
+			switch message.Type {
+			case ProtocolMessage_CONNECT:
+				uuid, _ := uuid.NewV4()
+				c.id = uuid.String()
+				c.username = message.Connect.Username
+				c.position = Position{x: 90, y: 70}
+				c.send <- buildHelloMessage(c.id, c.position.x, c.position.y)
+				for client := range c.hub.clients {
+					c.send <- buildSpawnMessage(client.username, client.id, client.position.x, client.position.y)
+				}
+				c.hub.broadcast <- buildSpawnMessage(c.username, c.id, c.position.x, c.position.y)
+			case ProtocolMessage_POSITION:
+				c.position.x = message.Position.X
+				c.position.y = message.Position.Y
+				c.hub.broadcast <- p
+			}
 		}
 
 	}
 }
 
-func buildHelloMessage(sender string) []byte {
+func buildHelloMessage(sender string, x float32, y float32) []byte {
 	msg := &ProtocolMessage{
 		Type:   ProtocolMessage_HELLO,
 		Sender: sender,
+		Position: &ProtocolMessage_PositionMessage{
+			X: x,
+			Y: y,
+		},
 	}
-	return build(msg)
+	return buildMessage(msg)
 }
 
-func buildSpawnMessage(name string, sender string) []byte {
+func buildUnspawnMessage(sender string) []byte {
+	msg := &ProtocolMessage{
+		Type:   ProtocolMessage_UNSPAWN,
+		Sender: sender,
+	}
+	return buildMessage(msg)
+}
+
+func buildSpawnMessage(name string, sender string, x float32, y float32) []byte {
 	msg := &ProtocolMessage{
 		Type:   ProtocolMessage_SPAWN,
 		Sender: sender,
-		Spawn: []*ProtocolMessage_SpawnMessage{
-			&ProtocolMessage_SpawnMessage{
-				Name: name,
-			},
+		Spawn: &ProtocolMessage_SpawnMessage{
+			Name: name,
+		},
+		Position: &ProtocolMessage_PositionMessage{
+			X: x,
+			Y: y,
 		},
 	}
-	return build(msg)
+	return buildMessage(msg)
 }
 
-func build(msg *ProtocolMessage) []byte {
-	data, err := proto.Marshal(msg)
+func buildMessage(msg *ProtocolMessage) []byte {
+	return buildPacket([]*ProtocolMessage{msg})
+}
+
+func buildPacket(msg []*ProtocolMessage) []byte {
+	packet := &ProtocolPacket{Message: msg}
+	data, err := proto.Marshal(packet)
 	if err != nil {
 		fmt.Println("Failed to marshall: ", err)
 		return nil
@@ -170,7 +201,7 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
+	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256), position: Position{x: 0, y: 0}}
 	client.hub.register <- client
 	go client.writePump()
 	client.readPump()

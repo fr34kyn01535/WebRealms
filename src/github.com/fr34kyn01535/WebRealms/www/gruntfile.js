@@ -78,5 +78,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-exec');
   grunt.registerTask("default", ["exec:generateProto","build","watch"]);
-  grunt.registerTask("build", ["browserify","uglify"]);
+  grunt.registerTask("build", ["browserify"]);
+  grunt.registerTask("production", ["browserify","uglify"]);
 };

@@ -15,16 +15,16 @@ export class Client {
     private builder;
     public MessageType = main.ProtocolMessage.MessageType;
     public ProtocolMessage = main.ProtocolMessage;
-    private id:string;
+    public Id:string;
     public Connect() {
         let that = this;
         let builder = this.builder = main.ProtocolMessage;
-        let worker = this.worker = new Worker("dist/worker.bundle.min.js");
+        let worker = this.worker = new Worker("dist/worker.bundle.js");
         worker.onmessage = function(event) {
             let name: string = event.data[0];
             if(name === "message"){
-                let data :main.ProtocolMessage = main.ProtocolMessage.fromObject(event.data[1]);
-                if(data.Sender != that.id){
+                let data :main.ProtocolMessage$Properties = event.data[1];
+                if(data.Sender != that.Id){
                     console.log("WORKER <",data);
                     that.listeners.filter((listener)=>{ return listener.topic == data.Type}).forEach((listener)=>{
                         listener.callback(data);
@@ -39,7 +39,7 @@ export class Client {
         };
 
         that.on(that.MessageType.HELLO,function(data){
-            that.id = data.Sender;
+            that.Id = data.Sender;
         });
 
         this.send("connect");
@@ -50,7 +50,7 @@ export class Client {
         if(typeof content == 'string'){
             this.worker.postMessage(content);
         }else{
-            content.Sender = this.id;
+            content.Sender = this.Id;
             let message = this.builder.create(content);
             this.worker.postMessage(["message",main.ProtocolMessage.toObject(message)]);
         }
@@ -59,10 +59,10 @@ export class Client {
     public SendPosition(x: number,y: number){
         this.send({
             Type: main.ProtocolMessage.MessageType.POSITION,
-            Position: [{
+            Position: {
                 X: x,
                 Y: y
-            }]
+            }
         });
     }
     

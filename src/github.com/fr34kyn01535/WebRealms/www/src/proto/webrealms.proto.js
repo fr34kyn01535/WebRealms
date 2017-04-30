@@ -18,6 +18,201 @@ $root.main = (function() {
      */
     var main = {};
 
+    main.ProtocolPacket = (function() {
+
+        /**
+         * Properties of a ProtocolPacket.
+         * @typedef main.ProtocolPacket$Properties
+         * @type {Object}
+         * @property {Array.<main.ProtocolMessage$Properties>} [Message] ProtocolPacket Message.
+         */
+
+        /**
+         * Constructs a new ProtocolPacket.
+         * @exports main.ProtocolPacket
+         * @constructor
+         * @param {main.ProtocolPacket$Properties=} [properties] Properties to set
+         */
+        function ProtocolPacket(properties) {
+            this.Message = [];
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * ProtocolPacket Message.
+         * @type {Array.<main.ProtocolMessage$Properties>}
+         */
+        ProtocolPacket.prototype.Message = $util.emptyArray;
+
+        /**
+         * Creates a new ProtocolPacket instance using the specified properties.
+         * @param {main.ProtocolPacket$Properties=} [properties] Properties to set
+         * @returns {main.ProtocolPacket} ProtocolPacket instance
+         */
+        ProtocolPacket.create = function create(properties) {
+            return new ProtocolPacket(properties);
+        };
+
+        /**
+         * Encodes the specified ProtocolPacket message. Does not implicitly {@link main.ProtocolPacket.verify|verify} messages.
+         * @param {main.ProtocolPacket$Properties} message ProtocolPacket message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ProtocolPacket.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.Message != null && message.Message.length)
+                for (var i = 0; i < message.Message.length; ++i)
+                    $root.main.ProtocolMessage.encode(message.Message[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Encodes the specified ProtocolPacket message, length delimited. Does not implicitly {@link main.ProtocolPacket.verify|verify} messages.
+         * @param {main.ProtocolPacket$Properties} message ProtocolPacket message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ProtocolPacket.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a ProtocolPacket message from the specified reader or buffer.
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {main.ProtocolPacket} ProtocolPacket
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ProtocolPacket.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.main.ProtocolPacket();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    if (!(message.Message && message.Message.length))
+                        message.Message = [];
+                    message.Message.push($root.main.ProtocolMessage.decode(reader, reader.uint32()));
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Decodes a ProtocolPacket message from the specified reader or buffer, length delimited.
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {main.ProtocolPacket} ProtocolPacket
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ProtocolPacket.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a ProtocolPacket message.
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {?string} `null` if valid, otherwise the reason why it is not
+         */
+        ProtocolPacket.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.Message != null && message.hasOwnProperty("Message")) {
+                if (!Array.isArray(message.Message))
+                    return "Message: array expected";
+                for (var i = 0; i < message.Message.length; ++i) {
+                    var error = $root.main.ProtocolMessage.verify(message.Message[i]);
+                    if (error)
+                        return "Message." + error;
+                }
+            }
+            return null;
+        };
+
+        /**
+         * Creates a ProtocolPacket message from a plain object. Also converts values to their respective internal types.
+         * @param {Object.<string,*>} object Plain object
+         * @returns {main.ProtocolPacket} ProtocolPacket
+         */
+        ProtocolPacket.fromObject = function fromObject(object) {
+            if (object instanceof $root.main.ProtocolPacket)
+                return object;
+            var message = new $root.main.ProtocolPacket();
+            if (object.Message) {
+                if (!Array.isArray(object.Message))
+                    throw TypeError(".main.ProtocolPacket.Message: array expected");
+                message.Message = [];
+                for (var i = 0; i < object.Message.length; ++i) {
+                    if (typeof object.Message[i] !== "object")
+                        throw TypeError(".main.ProtocolPacket.Message: object expected");
+                    message.Message[i] = $root.main.ProtocolMessage.fromObject(object.Message[i]);
+                }
+            }
+            return message;
+        };
+
+        /**
+         * Creates a ProtocolPacket message from a plain object. Also converts values to their respective internal types.
+         * This is an alias of {@link main.ProtocolPacket.fromObject}.
+         * @function
+         * @param {Object.<string,*>} object Plain object
+         * @returns {main.ProtocolPacket} ProtocolPacket
+         */
+        ProtocolPacket.from = ProtocolPacket.fromObject;
+
+        /**
+         * Creates a plain object from a ProtocolPacket message. Also converts values to other types if specified.
+         * @param {main.ProtocolPacket} message ProtocolPacket
+         * @param {$protobuf.ConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        ProtocolPacket.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            var object = {};
+            if (options.arrays || options.defaults)
+                object.Message = [];
+            if (message.Message && message.Message.length) {
+                object.Message = [];
+                for (var j = 0; j < message.Message.length; ++j)
+                    object.Message[j] = $root.main.ProtocolMessage.toObject(message.Message[j], options);
+            }
+            return object;
+        };
+
+        /**
+         * Creates a plain object from this ProtocolPacket message. Also converts values to other types if specified.
+         * @param {$protobuf.ConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        ProtocolPacket.prototype.toObject = function toObject(options) {
+            return this.constructor.toObject(this, options);
+        };
+
+        /**
+         * Converts this ProtocolPacket to JSON.
+         * @returns {Object.<string,*>} JSON object
+         */
+        ProtocolPacket.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return ProtocolPacket;
+    })();
+
     main.ProtocolMessage = (function() {
 
         /**
@@ -31,10 +226,9 @@ $root.main = (function() {
          * @property {main.ProtocolMessage.DisconnectMessage$Properties} [Disconnect] ProtocolMessage Disconnect.
          * @property {main.ProtocolMessage.PingMessage$Properties} [Ping] ProtocolMessage Ping.
          * @property {main.ProtocolMessage.PongMessage$Properties} [Pong] ProtocolMessage Pong.
-         * @property {Array.<main.ProtocolMessage.SpawnMessage$Properties>} [Spawn] ProtocolMessage Spawn.
-         * @property {Array.<main.ProtocolMessage.UnspawnMessage$Properties>} [Unspawn] ProtocolMessage Unspawn.
-         * @property {Array.<main.ProtocolMessage.PositionMessage$Properties>} [Position] ProtocolMessage Position.
-         * @property {Array.<main.ProtocolMessage.RotationMessage$Properties>} [Rotation] ProtocolMessage Rotation.
+         * @property {main.ProtocolMessage.SpawnMessage$Properties} [Spawn] ProtocolMessage Spawn.
+         * @property {main.ProtocolMessage.PositionMessage$Properties} [Position] ProtocolMessage Position.
+         * @property {main.ProtocolMessage.RotationMessage$Properties} [Rotation] ProtocolMessage Rotation.
          */
 
         /**
@@ -44,10 +238,6 @@ $root.main = (function() {
          * @param {main.ProtocolMessage$Properties=} [properties] Properties to set
          */
         function ProtocolMessage(properties) {
-            this.Spawn = [];
-            this.Unspawn = [];
-            this.Position = [];
-            this.Rotation = [];
             if (properties)
                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -98,27 +288,21 @@ $root.main = (function() {
 
         /**
          * ProtocolMessage Spawn.
-         * @type {Array.<main.ProtocolMessage.SpawnMessage$Properties>}
+         * @type {(main.ProtocolMessage.SpawnMessage$Properties|null)}
          */
-        ProtocolMessage.prototype.Spawn = $util.emptyArray;
-
-        /**
-         * ProtocolMessage Unspawn.
-         * @type {Array.<main.ProtocolMessage.UnspawnMessage$Properties>}
-         */
-        ProtocolMessage.prototype.Unspawn = $util.emptyArray;
+        ProtocolMessage.prototype.Spawn = null;
 
         /**
          * ProtocolMessage Position.
-         * @type {Array.<main.ProtocolMessage.PositionMessage$Properties>}
+         * @type {(main.ProtocolMessage.PositionMessage$Properties|null)}
          */
-        ProtocolMessage.prototype.Position = $util.emptyArray;
+        ProtocolMessage.prototype.Position = null;
 
         /**
          * ProtocolMessage Rotation.
-         * @type {Array.<main.ProtocolMessage.RotationMessage$Properties>}
+         * @type {(main.ProtocolMessage.RotationMessage$Properties|null)}
          */
-        ProtocolMessage.prototype.Rotation = $util.emptyArray;
+        ProtocolMessage.prototype.Rotation = null;
 
         /**
          * Creates a new ProtocolMessage instance using the specified properties.
@@ -152,18 +336,12 @@ $root.main = (function() {
                 $root.main.ProtocolMessage.PingMessage.encode(message.Ping, writer.uint32(/* id 16, wireType 2 =*/130).fork()).ldelim();
             if (message.Pong != null && message.hasOwnProperty("Pong"))
                 $root.main.ProtocolMessage.PongMessage.encode(message.Pong, writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
-            if (message.Spawn != null && message.Spawn.length)
-                for (var i = 0; i < message.Spawn.length; ++i)
-                    $root.main.ProtocolMessage.SpawnMessage.encode(message.Spawn[i], writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
-            if (message.Unspawn != null && message.Unspawn.length)
-                for (var i = 0; i < message.Unspawn.length; ++i)
-                    $root.main.ProtocolMessage.UnspawnMessage.encode(message.Unspawn[i], writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
-            if (message.Position != null && message.Position.length)
-                for (var i = 0; i < message.Position.length; ++i)
-                    $root.main.ProtocolMessage.PositionMessage.encode(message.Position[i], writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
-            if (message.Rotation != null && message.Rotation.length)
-                for (var i = 0; i < message.Rotation.length; ++i)
-                    $root.main.ProtocolMessage.RotationMessage.encode(message.Rotation[i], writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+            if (message.Spawn != null && message.hasOwnProperty("Spawn"))
+                $root.main.ProtocolMessage.SpawnMessage.encode(message.Spawn, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
+            if (message.Position != null && message.hasOwnProperty("Position"))
+                $root.main.ProtocolMessage.PositionMessage.encode(message.Position, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
+            if (message.Rotation != null && message.hasOwnProperty("Rotation"))
+                $root.main.ProtocolMessage.RotationMessage.encode(message.Rotation, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
             return writer;
         };
 
@@ -214,24 +392,13 @@ $root.main = (function() {
                     message.Pong = $root.main.ProtocolMessage.PongMessage.decode(reader, reader.uint32());
                     break;
                 case 18:
-                    if (!(message.Spawn && message.Spawn.length))
-                        message.Spawn = [];
-                    message.Spawn.push($root.main.ProtocolMessage.SpawnMessage.decode(reader, reader.uint32()));
-                    break;
-                case 19:
-                    if (!(message.Unspawn && message.Unspawn.length))
-                        message.Unspawn = [];
-                    message.Unspawn.push($root.main.ProtocolMessage.UnspawnMessage.decode(reader, reader.uint32()));
+                    message.Spawn = $root.main.ProtocolMessage.SpawnMessage.decode(reader, reader.uint32());
                     break;
                 case 20:
-                    if (!(message.Position && message.Position.length))
-                        message.Position = [];
-                    message.Position.push($root.main.ProtocolMessage.PositionMessage.decode(reader, reader.uint32()));
+                    message.Position = $root.main.ProtocolMessage.PositionMessage.decode(reader, reader.uint32());
                     break;
                 case 21:
-                    if (!(message.Rotation && message.Rotation.length))
-                        message.Rotation = [];
-                    message.Rotation.push($root.main.ProtocolMessage.RotationMessage.decode(reader, reader.uint32()));
+                    message.Rotation = $root.main.ProtocolMessage.RotationMessage.decode(reader, reader.uint32());
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -307,40 +474,19 @@ $root.main = (function() {
                     return "Pong." + error;
             }
             if (message.Spawn != null && message.hasOwnProperty("Spawn")) {
-                if (!Array.isArray(message.Spawn))
-                    return "Spawn: array expected";
-                for (var i = 0; i < message.Spawn.length; ++i) {
-                    var error = $root.main.ProtocolMessage.SpawnMessage.verify(message.Spawn[i]);
-                    if (error)
-                        return "Spawn." + error;
-                }
-            }
-            if (message.Unspawn != null && message.hasOwnProperty("Unspawn")) {
-                if (!Array.isArray(message.Unspawn))
-                    return "Unspawn: array expected";
-                for (var i = 0; i < message.Unspawn.length; ++i) {
-                    var error = $root.main.ProtocolMessage.UnspawnMessage.verify(message.Unspawn[i]);
-                    if (error)
-                        return "Unspawn." + error;
-                }
+                var error = $root.main.ProtocolMessage.SpawnMessage.verify(message.Spawn);
+                if (error)
+                    return "Spawn." + error;
             }
             if (message.Position != null && message.hasOwnProperty("Position")) {
-                if (!Array.isArray(message.Position))
-                    return "Position: array expected";
-                for (var i = 0; i < message.Position.length; ++i) {
-                    var error = $root.main.ProtocolMessage.PositionMessage.verify(message.Position[i]);
-                    if (error)
-                        return "Position." + error;
-                }
+                var error = $root.main.ProtocolMessage.PositionMessage.verify(message.Position);
+                if (error)
+                    return "Position." + error;
             }
             if (message.Rotation != null && message.hasOwnProperty("Rotation")) {
-                if (!Array.isArray(message.Rotation))
-                    return "Rotation: array expected";
-                for (var i = 0; i < message.Rotation.length; ++i) {
-                    var error = $root.main.ProtocolMessage.RotationMessage.verify(message.Rotation[i]);
-                    if (error)
-                        return "Rotation." + error;
-                }
+                var error = $root.main.ProtocolMessage.RotationMessage.verify(message.Rotation);
+                if (error)
+                    return "Rotation." + error;
             }
             return null;
         };
@@ -423,45 +569,20 @@ $root.main = (function() {
                     throw TypeError(".main.ProtocolMessage.Pong: object expected");
                 message.Pong = $root.main.ProtocolMessage.PongMessage.fromObject(object.Pong);
             }
-            if (object.Spawn) {
-                if (!Array.isArray(object.Spawn))
-                    throw TypeError(".main.ProtocolMessage.Spawn: array expected");
-                message.Spawn = [];
-                for (var i = 0; i < object.Spawn.length; ++i) {
-                    if (typeof object.Spawn[i] !== "object")
-                        throw TypeError(".main.ProtocolMessage.Spawn: object expected");
-                    message.Spawn[i] = $root.main.ProtocolMessage.SpawnMessage.fromObject(object.Spawn[i]);
-                }
+            if (object.Spawn != null) {
+                if (typeof object.Spawn !== "object")
+                    throw TypeError(".main.ProtocolMessage.Spawn: object expected");
+                message.Spawn = $root.main.ProtocolMessage.SpawnMessage.fromObject(object.Spawn);
             }
-            if (object.Unspawn) {
-                if (!Array.isArray(object.Unspawn))
-                    throw TypeError(".main.ProtocolMessage.Unspawn: array expected");
-                message.Unspawn = [];
-                for (var i = 0; i < object.Unspawn.length; ++i) {
-                    if (typeof object.Unspawn[i] !== "object")
-                        throw TypeError(".main.ProtocolMessage.Unspawn: object expected");
-                    message.Unspawn[i] = $root.main.ProtocolMessage.UnspawnMessage.fromObject(object.Unspawn[i]);
-                }
+            if (object.Position != null) {
+                if (typeof object.Position !== "object")
+                    throw TypeError(".main.ProtocolMessage.Position: object expected");
+                message.Position = $root.main.ProtocolMessage.PositionMessage.fromObject(object.Position);
             }
-            if (object.Position) {
-                if (!Array.isArray(object.Position))
-                    throw TypeError(".main.ProtocolMessage.Position: array expected");
-                message.Position = [];
-                for (var i = 0; i < object.Position.length; ++i) {
-                    if (typeof object.Position[i] !== "object")
-                        throw TypeError(".main.ProtocolMessage.Position: object expected");
-                    message.Position[i] = $root.main.ProtocolMessage.PositionMessage.fromObject(object.Position[i]);
-                }
-            }
-            if (object.Rotation) {
-                if (!Array.isArray(object.Rotation))
-                    throw TypeError(".main.ProtocolMessage.Rotation: array expected");
-                message.Rotation = [];
-                for (var i = 0; i < object.Rotation.length; ++i) {
-                    if (typeof object.Rotation[i] !== "object")
-                        throw TypeError(".main.ProtocolMessage.Rotation: object expected");
-                    message.Rotation[i] = $root.main.ProtocolMessage.RotationMessage.fromObject(object.Rotation[i]);
-                }
+            if (object.Rotation != null) {
+                if (typeof object.Rotation !== "object")
+                    throw TypeError(".main.ProtocolMessage.Rotation: object expected");
+                message.Rotation = $root.main.ProtocolMessage.RotationMessage.fromObject(object.Rotation);
             }
             return message;
         };
@@ -485,12 +606,6 @@ $root.main = (function() {
             if (!options)
                 options = {};
             var object = {};
-            if (options.arrays || options.defaults) {
-                object.Spawn = [];
-                object.Unspawn = [];
-                object.Position = [];
-                object.Rotation = [];
-            }
             if (options.defaults) {
                 object.Type = options.enums === String ? "NONE" : 0;
                 object.Sender = "";
@@ -499,6 +614,9 @@ $root.main = (function() {
                 object.Disconnect = null;
                 object.Ping = null;
                 object.Pong = null;
+                object.Spawn = null;
+                object.Position = null;
+                object.Rotation = null;
             }
             if (message.Type != null && message.hasOwnProperty("Type"))
                 object.Type = options.enums === String ? $root.main.ProtocolMessage.MessageType[message.Type] : message.Type;
@@ -514,26 +632,12 @@ $root.main = (function() {
                 object.Ping = $root.main.ProtocolMessage.PingMessage.toObject(message.Ping, options);
             if (message.Pong != null && message.hasOwnProperty("Pong"))
                 object.Pong = $root.main.ProtocolMessage.PongMessage.toObject(message.Pong, options);
-            if (message.Spawn && message.Spawn.length) {
-                object.Spawn = [];
-                for (var j = 0; j < message.Spawn.length; ++j)
-                    object.Spawn[j] = $root.main.ProtocolMessage.SpawnMessage.toObject(message.Spawn[j], options);
-            }
-            if (message.Unspawn && message.Unspawn.length) {
-                object.Unspawn = [];
-                for (var j = 0; j < message.Unspawn.length; ++j)
-                    object.Unspawn[j] = $root.main.ProtocolMessage.UnspawnMessage.toObject(message.Unspawn[j], options);
-            }
-            if (message.Position && message.Position.length) {
-                object.Position = [];
-                for (var j = 0; j < message.Position.length; ++j)
-                    object.Position[j] = $root.main.ProtocolMessage.PositionMessage.toObject(message.Position[j], options);
-            }
-            if (message.Rotation && message.Rotation.length) {
-                object.Rotation = [];
-                for (var j = 0; j < message.Rotation.length; ++j)
-                    object.Rotation[j] = $root.main.ProtocolMessage.RotationMessage.toObject(message.Rotation[j], options);
-            }
+            if (message.Spawn != null && message.hasOwnProperty("Spawn"))
+                object.Spawn = $root.main.ProtocolMessage.SpawnMessage.toObject(message.Spawn, options);
+            if (message.Position != null && message.hasOwnProperty("Position"))
+                object.Position = $root.main.ProtocolMessage.PositionMessage.toObject(message.Position, options);
+            if (message.Rotation != null && message.hasOwnProperty("Rotation"))
+                object.Rotation = $root.main.ProtocolMessage.RotationMessage.toObject(message.Rotation, options);
             return object;
         };
 
@@ -1548,155 +1652,6 @@ $root.main = (function() {
             };
 
             return SpawnMessage;
-        })();
-
-        ProtocolMessage.UnspawnMessage = (function() {
-
-            /**
-             * Properties of an UnspawnMessage.
-             * @typedef main.ProtocolMessage.UnspawnMessage$Properties
-             * @type {Object}
-             */
-
-            /**
-             * Constructs a new UnspawnMessage.
-             * @exports main.ProtocolMessage.UnspawnMessage
-             * @constructor
-             * @param {main.ProtocolMessage.UnspawnMessage$Properties=} [properties] Properties to set
-             */
-            function UnspawnMessage(properties) {
-                if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
-                            this[keys[i]] = properties[keys[i]];
-            }
-
-            /**
-             * Creates a new UnspawnMessage instance using the specified properties.
-             * @param {main.ProtocolMessage.UnspawnMessage$Properties=} [properties] Properties to set
-             * @returns {main.ProtocolMessage.UnspawnMessage} UnspawnMessage instance
-             */
-            UnspawnMessage.create = function create(properties) {
-                return new UnspawnMessage(properties);
-            };
-
-            /**
-             * Encodes the specified UnspawnMessage message. Does not implicitly {@link main.ProtocolMessage.UnspawnMessage.verify|verify} messages.
-             * @param {main.ProtocolMessage.UnspawnMessage$Properties} message UnspawnMessage message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            UnspawnMessage.encode = function encode(message, writer) {
-                if (!writer)
-                    writer = $Writer.create();
-                return writer;
-            };
-
-            /**
-             * Encodes the specified UnspawnMessage message, length delimited. Does not implicitly {@link main.ProtocolMessage.UnspawnMessage.verify|verify} messages.
-             * @param {main.ProtocolMessage.UnspawnMessage$Properties} message UnspawnMessage message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            UnspawnMessage.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
-            };
-
-            /**
-             * Decodes an UnspawnMessage message from the specified reader or buffer.
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {main.ProtocolMessage.UnspawnMessage} UnspawnMessage
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            UnspawnMessage.decode = function decode(reader, length) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.main.ProtocolMessage.UnspawnMessage();
-                while (reader.pos < end) {
-                    var tag = reader.uint32();
-                    switch (tag >>> 3) {
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
-                    }
-                }
-                return message;
-            };
-
-            /**
-             * Decodes an UnspawnMessage message from the specified reader or buffer, length delimited.
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {main.ProtocolMessage.UnspawnMessage} UnspawnMessage
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            UnspawnMessage.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader(reader);
-                return this.decode(reader, reader.uint32());
-            };
-
-            /**
-             * Verifies an UnspawnMessage message.
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {?string} `null` if valid, otherwise the reason why it is not
-             */
-            UnspawnMessage.verify = function verify(message) {
-                if (typeof message !== "object" || message === null)
-                    return "object expected";
-                return null;
-            };
-
-            /**
-             * Creates an UnspawnMessage message from a plain object. Also converts values to their respective internal types.
-             * @param {Object.<string,*>} object Plain object
-             * @returns {main.ProtocolMessage.UnspawnMessage} UnspawnMessage
-             */
-            UnspawnMessage.fromObject = function fromObject(object) {
-                if (object instanceof $root.main.ProtocolMessage.UnspawnMessage)
-                    return object;
-                return new $root.main.ProtocolMessage.UnspawnMessage();
-            };
-
-            /**
-             * Creates an UnspawnMessage message from a plain object. Also converts values to their respective internal types.
-             * This is an alias of {@link main.ProtocolMessage.UnspawnMessage.fromObject}.
-             * @function
-             * @param {Object.<string,*>} object Plain object
-             * @returns {main.ProtocolMessage.UnspawnMessage} UnspawnMessage
-             */
-            UnspawnMessage.from = UnspawnMessage.fromObject;
-
-            /**
-             * Creates a plain object from an UnspawnMessage message. Also converts values to other types if specified.
-             * @param {main.ProtocolMessage.UnspawnMessage} message UnspawnMessage
-             * @param {$protobuf.ConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            UnspawnMessage.toObject = function toObject() {
-                return {};
-            };
-
-            /**
-             * Creates a plain object from this UnspawnMessage message. Also converts values to other types if specified.
-             * @param {$protobuf.ConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            UnspawnMessage.prototype.toObject = function toObject(options) {
-                return this.constructor.toObject(this, options);
-            };
-
-            /**
-             * Converts this UnspawnMessage to JSON.
-             * @returns {Object.<string,*>} JSON object
-             */
-            UnspawnMessage.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-            };
-
-            return UnspawnMessage;
         })();
 
         ProtocolMessage.PositionMessage = (function() {

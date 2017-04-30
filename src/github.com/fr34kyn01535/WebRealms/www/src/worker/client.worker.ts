@@ -4,30 +4,32 @@ import { main }  from '../proto/webrealms.proto.js'
 declare function postMessage(message: any);
 
 class Client{
-    private socket;
+    private socket: WebSocket;
     private builder;
-    private worker;
+    private packetBuilder;
+    private worker: Worker;
+    private address:string;
 
-    public constructor(window){
+    private connect(){
         var that = this;
-        let builder = this.builder = main.ProtocolMessage;
-        let socket = this.socket = new WebSocket("ws://"+window.location.hostname+"/ws");
-        window.onmessage = function(data){
-             that.onmessage(data)
-        };
-        socket.onopen = function () {
-            socket.binaryType = "arraybuffer";
+        this.socket = new WebSocket(this.address);
+        
+        this.socket.onopen = function () {
+            that.socket.binaryType = "arraybuffer";
             postMessage(["connected"]);
         }
 
-        socket.onclose = function(evt: CloseEvent) {
+        this.socket.onclose = function(evt: CloseEvent) {
             postMessage(["disconnected",evt.type]);
+            setTimeout(function(){that.connect()}, 5000);
         }
         
-        socket.onmessage = function(event) {
+        this.socket.onmessage = function(event) {
             try {
-                let m = main.ProtocolMessage.toObject(builder.decode(new Uint8Array(event.data)));
-                postMessage(["message",m]);
+                let packet = that.packetBuilder.decode(new Uint8Array(event.data));
+                for(let message of packet.Message){
+                    postMessage(["message",message]);
+                }
             } catch (e) {
                 if (e instanceof ProtoBuf.util.ProtocolError) {
                     console.log(e);
@@ -39,17 +41,33 @@ class Client{
         }
     }
 
+    public constructor(window){
+        var that = this;
+        this.address = "ws://"+window.location.hostname+":"+window.location.port+"/ws";
+        let builder = this.builder = main.ProtocolMessage;
+        let packetBuilder = this.packetBuilder = main.ProtocolPacket;
+        this.connect();
+        window.onmessage = function(data){
+             that.onmessage(data)
+        };
+    }
+
     public onmessage(event) {
         switch(event.data[0]){
             case "message":
-                let content: main.ProtocolMessage = main.ProtocolMessage.fromObject(event.data[1]);
-                this.send(content);
+                let content: main.ProtocolMessage$Properties = event.data[1];
+                this.sendMessage(content);
             break;
         }
     };
 
-    private send(message: main.ProtocolMessage){
-        let data = this.builder.encode(message).finish();
+    private sendMessage(message: main.ProtocolMessage$Properties){
+        this.sendPacket([message]);
+    }
+    private sendPacket(messages: main.ProtocolMessage$Properties[]){
+        let packet = main.ProtocolPacket.create();
+        packet.Message = messages;
+        let data = this.packetBuilder.encode(packet).finish();
         this.socket.send(data);
     }
 }

@@ -30,34 +30,34 @@ export class Level extends Phaser.State {
             that.players = {};
         });
 
-        connection.on(connection.MessageType.POSITION,function(data: main.ProtocolMessage){
+        connection.on(connection.MessageType.POSITION,function(data: main.ProtocolMessage$Properties){
             if(that.players[data.Sender]){
-                for(let i in data.Position){
-                    let position = data.Position[i];
-                    that.players[data.Sender].position.x = position.X;
-                    that.players[data.Sender].position.y = position.Y;
-                }
+                that.players[data.Sender].position.x = data.Position.X;
+                that.players[data.Sender].position.y = data.Position.Y;
             }
         });
 
-        connection.on(connection.MessageType.SPAWN,function(data: main.ProtocolMessage){
-            let enemy = that.game.add.sprite(70, 100,"white");
-            enemy.tint = 0xffccee;
-            that.enemies.add(enemy);
-            that.game.physics.arcade.enable(enemy);
-            enemy.body.bounce.set(1, 1);
-            enemy.body.collideWorldBounds = true;
-            that.players[data.Sender] = enemy;
+        connection.on(connection.MessageType.SPAWN,function(data: main.ProtocolMessage$Properties){
+                let enemy = that.game.add.sprite(data.Position.X,data.Position.Y,"white");
+                enemy.tint = 0xffccee;
+                that.enemies.add(enemy);
+                that.game.physics.arcade.enable(enemy);
+                enemy.body.bounce.set(1, 1);
+                enemy.body.collideWorldBounds = true;
+                that.players[data.Sender] = enemy;
         });
 
-        connection.on(connection.MessageType.UNSPAWN,function(data: main.ProtocolMessage){
+        connection.on(connection.MessageType.UNSPAWN,function(data: main.ProtocolMessage$Properties){
             if(that.players[data.Sender]){
                 that.players[data.Sender].kill();
                 delete that.players[data.Sender];
             }
         });
 
-        connection.on(connection.MessageType.HELLO,function(data: main.ProtocolMessage){
+        connection.on(connection.MessageType.HELLO,function(data: main.ProtocolMessage$Properties){
+            console.log(data.Position);
+            that.player.position.x = data.Position.X;
+            that.player.position.y = data.Position.Y;
             that.player.revive();
         });
         connection.Connect();
@@ -67,7 +67,7 @@ export class Level extends Phaser.State {
 
     }
     public gameOver(){
-        this.player.kill();
+        //this.player.kill();
         console.log("You dead pal");
     }
 

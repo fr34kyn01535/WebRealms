@@ -7,6 +7,119 @@ import * as $protobuf from "protobufjs";
  */
 export namespace main {
 
+    type ProtocolPacket$Properties = {
+        Message?: main.ProtocolMessage$Properties[];
+    };
+
+    /**
+     * Constructs a new ProtocolPacket.
+     * @exports main.ProtocolPacket
+     * @constructor
+     * @param {main.ProtocolPacket$Properties=} [properties] Properties to set
+     */
+    class ProtocolPacket {
+
+        /**
+         * Constructs a new ProtocolPacket.
+         * @exports main.ProtocolPacket
+         * @constructor
+         * @param {main.ProtocolPacket$Properties=} [properties] Properties to set
+         */
+        constructor(properties?: main.ProtocolPacket$Properties);
+
+        /**
+         * ProtocolPacket Message.
+         * @type {Array.<main.ProtocolMessage$Properties>}
+         */
+        public Message: main.ProtocolMessage$Properties[];
+
+        /**
+         * Creates a new ProtocolPacket instance using the specified properties.
+         * @param {main.ProtocolPacket$Properties=} [properties] Properties to set
+         * @returns {main.ProtocolPacket} ProtocolPacket instance
+         */
+        public static create(properties?: main.ProtocolPacket$Properties): main.ProtocolPacket;
+
+        /**
+         * Encodes the specified ProtocolPacket message. Does not implicitly {@link main.ProtocolPacket.verify|verify} messages.
+         * @param {main.ProtocolPacket$Properties} message ProtocolPacket message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        public static encode(message: main.ProtocolPacket$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified ProtocolPacket message, length delimited. Does not implicitly {@link main.ProtocolPacket.verify|verify} messages.
+         * @param {main.ProtocolPacket$Properties} message ProtocolPacket message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        public static encodeDelimited(message: main.ProtocolPacket$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a ProtocolPacket message from the specified reader or buffer.
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {main.ProtocolPacket} ProtocolPacket
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): main.ProtocolPacket;
+
+        /**
+         * Decodes a ProtocolPacket message from the specified reader or buffer, length delimited.
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {main.ProtocolPacket} ProtocolPacket
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): main.ProtocolPacket;
+
+        /**
+         * Verifies a ProtocolPacket message.
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {?string} `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): string;
+
+        /**
+         * Creates a ProtocolPacket message from a plain object. Also converts values to their respective internal types.
+         * @param {Object.<string,*>} object Plain object
+         * @returns {main.ProtocolPacket} ProtocolPacket
+         */
+        public static fromObject(object: { [k: string]: any }): main.ProtocolPacket;
+
+        /**
+         * Creates a ProtocolPacket message from a plain object. Also converts values to their respective internal types.
+         * This is an alias of {@link main.ProtocolPacket.fromObject}.
+         * @function
+         * @param {Object.<string,*>} object Plain object
+         * @returns {main.ProtocolPacket} ProtocolPacket
+         */
+        public static from(object: { [k: string]: any }): main.ProtocolPacket;
+
+        /**
+         * Creates a plain object from a ProtocolPacket message. Also converts values to other types if specified.
+         * @param {main.ProtocolPacket} message ProtocolPacket
+         * @param {$protobuf.ConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        public static toObject(message: main.ProtocolPacket, options?: $protobuf.ConversionOptions): { [k: string]: any };
+
+        /**
+         * Creates a plain object from this ProtocolPacket message. Also converts values to other types if specified.
+         * @param {$protobuf.ConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        public toObject(options?: $protobuf.ConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this ProtocolPacket to JSON.
+         * @returns {Object.<string,*>} JSON object
+         */
+        public toJSON(): { [k: string]: any };
+    }
+
     type ProtocolMessage$Properties = {
         Type?: main.ProtocolMessage.MessageType;
         Sender?: string;
@@ -15,10 +128,9 @@ export namespace main {
         Disconnect?: main.ProtocolMessage.DisconnectMessage$Properties;
         Ping?: main.ProtocolMessage.PingMessage$Properties;
         Pong?: main.ProtocolMessage.PongMessage$Properties;
-        Spawn?: main.ProtocolMessage.SpawnMessage$Properties[];
-        Unspawn?: main.ProtocolMessage.UnspawnMessage$Properties[];
-        Position?: main.ProtocolMessage.PositionMessage$Properties[];
-        Rotation?: main.ProtocolMessage.RotationMessage$Properties[];
+        Spawn?: main.ProtocolMessage.SpawnMessage$Properties;
+        Position?: main.ProtocolMessage.PositionMessage$Properties;
+        Rotation?: main.ProtocolMessage.RotationMessage$Properties;
     };
 
     /**
@@ -81,27 +193,21 @@ export namespace main {
 
         /**
          * ProtocolMessage Spawn.
-         * @type {Array.<main.ProtocolMessage.SpawnMessage$Properties>}
+         * @type {(main.ProtocolMessage.SpawnMessage$Properties|null)}
          */
-        public Spawn: main.ProtocolMessage.SpawnMessage$Properties[];
-
-        /**
-         * ProtocolMessage Unspawn.
-         * @type {Array.<main.ProtocolMessage.UnspawnMessage$Properties>}
-         */
-        public Unspawn: main.ProtocolMessage.UnspawnMessage$Properties[];
+        public Spawn: (main.ProtocolMessage.SpawnMessage$Properties|null);
 
         /**
          * ProtocolMessage Position.
-         * @type {Array.<main.ProtocolMessage.PositionMessage$Properties>}
+         * @type {(main.ProtocolMessage.PositionMessage$Properties|null)}
          */
-        public Position: main.ProtocolMessage.PositionMessage$Properties[];
+        public Position: (main.ProtocolMessage.PositionMessage$Properties|null);
 
         /**
          * ProtocolMessage Rotation.
-         * @type {Array.<main.ProtocolMessage.RotationMessage$Properties>}
+         * @type {(main.ProtocolMessage.RotationMessage$Properties|null)}
          */
-        public Rotation: main.ProtocolMessage.RotationMessage$Properties[];
+        public Rotation: (main.ProtocolMessage.RotationMessage$Properties|null);
 
         /**
          * Creates a new ProtocolMessage instance using the specified properties.
@@ -869,111 +975,6 @@ export namespace main {
 
             /**
              * Converts this SpawnMessage to JSON.
-             * @returns {Object.<string,*>} JSON object
-             */
-            public toJSON(): { [k: string]: any };
-        }
-
-        type UnspawnMessage$Properties = {};
-
-        /**
-         * Constructs a new UnspawnMessage.
-         * @exports main.ProtocolMessage.UnspawnMessage
-         * @constructor
-         * @param {main.ProtocolMessage.UnspawnMessage$Properties=} [properties] Properties to set
-         */
-        class UnspawnMessage {
-
-            /**
-             * Constructs a new UnspawnMessage.
-             * @exports main.ProtocolMessage.UnspawnMessage
-             * @constructor
-             * @param {main.ProtocolMessage.UnspawnMessage$Properties=} [properties] Properties to set
-             */
-            constructor(properties?: main.ProtocolMessage.UnspawnMessage$Properties);
-
-            /**
-             * Creates a new UnspawnMessage instance using the specified properties.
-             * @param {main.ProtocolMessage.UnspawnMessage$Properties=} [properties] Properties to set
-             * @returns {main.ProtocolMessage.UnspawnMessage} UnspawnMessage instance
-             */
-            public static create(properties?: main.ProtocolMessage.UnspawnMessage$Properties): main.ProtocolMessage.UnspawnMessage;
-
-            /**
-             * Encodes the specified UnspawnMessage message. Does not implicitly {@link main.ProtocolMessage.UnspawnMessage.verify|verify} messages.
-             * @param {main.ProtocolMessage.UnspawnMessage$Properties} message UnspawnMessage message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            public static encode(message: main.ProtocolMessage.UnspawnMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Encodes the specified UnspawnMessage message, length delimited. Does not implicitly {@link main.ProtocolMessage.UnspawnMessage.verify|verify} messages.
-             * @param {main.ProtocolMessage.UnspawnMessage$Properties} message UnspawnMessage message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            public static encodeDelimited(message: main.ProtocolMessage.UnspawnMessage$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Decodes an UnspawnMessage message from the specified reader or buffer.
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {main.ProtocolMessage.UnspawnMessage} UnspawnMessage
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): main.ProtocolMessage.UnspawnMessage;
-
-            /**
-             * Decodes an UnspawnMessage message from the specified reader or buffer, length delimited.
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {main.ProtocolMessage.UnspawnMessage} UnspawnMessage
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): main.ProtocolMessage.UnspawnMessage;
-
-            /**
-             * Verifies an UnspawnMessage message.
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {?string} `null` if valid, otherwise the reason why it is not
-             */
-            public static verify(message: { [k: string]: any }): string;
-
-            /**
-             * Creates an UnspawnMessage message from a plain object. Also converts values to their respective internal types.
-             * @param {Object.<string,*>} object Plain object
-             * @returns {main.ProtocolMessage.UnspawnMessage} UnspawnMessage
-             */
-            public static fromObject(object: { [k: string]: any }): main.ProtocolMessage.UnspawnMessage;
-
-            /**
-             * Creates an UnspawnMessage message from a plain object. Also converts values to their respective internal types.
-             * This is an alias of {@link main.ProtocolMessage.UnspawnMessage.fromObject}.
-             * @function
-             * @param {Object.<string,*>} object Plain object
-             * @returns {main.ProtocolMessage.UnspawnMessage} UnspawnMessage
-             */
-            public static from(object: { [k: string]: any }): main.ProtocolMessage.UnspawnMessage;
-
-            /**
-             * Creates a plain object from an UnspawnMessage message. Also converts values to other types if specified.
-             * @param {main.ProtocolMessage.UnspawnMessage} message UnspawnMessage
-             * @param {$protobuf.ConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            public static toObject(message: main.ProtocolMessage.UnspawnMessage, options?: $protobuf.ConversionOptions): { [k: string]: any };
-
-            /**
-             * Creates a plain object from this UnspawnMessage message. Also converts values to other types if specified.
-             * @param {$protobuf.ConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            public toObject(options?: $protobuf.ConversionOptions): { [k: string]: any };
-
-            /**
-             * Converts this UnspawnMessage to JSON.
              * @returns {Object.<string,*>} JSON object
              */
             public toJSON(): { [k: string]: any };
