@@ -1,7 +1,6 @@
 import * as ByteBuffer from 'bytebuffer';
 import * as ProtoBuf from 'protobufjs';
-import * as root from '../proto/webrealms.proto.js'
-
+import { main }  from '../proto/webrealms.proto.js'
 declare function postMessage(message: any);
 
 class Client{
@@ -11,7 +10,7 @@ class Client{
 
     public constructor(window){
         var that = this;
-        let builder = this.builder = root.webrealms.ProtocolMessage;
+        let builder = this.builder = main.ProtocolMessage;
         let socket = this.socket = new WebSocket("ws://"+window.location.hostname+"/ws");
         window.onmessage = function(data){
              that.onmessage(data)
@@ -27,7 +26,7 @@ class Client{
         
         socket.onmessage = function(event) {
             try {
-                let m = root.webrealms.ProtocolMessage.toObject(builder.decode(new Uint8Array(event.data)));
+                let m = main.ProtocolMessage.toObject(builder.decode(new Uint8Array(event.data)));
                 postMessage(["message",m]);
             } catch (e) {
                 if (e instanceof ProtoBuf.util.ProtocolError) {
@@ -43,13 +42,13 @@ class Client{
     public onmessage(event) {
         switch(event.data[0]){
             case "message":
-                let content: root.webrealms.ProtocolMessage = root.webrealms.ProtocolMessage.fromObject(event.data[1]);
+                let content: main.ProtocolMessage = main.ProtocolMessage.fromObject(event.data[1]);
                 this.send(content);
             break;
         }
     };
 
-    private send(message: root.webrealms.ProtocolMessage){
+    private send(message: main.ProtocolMessage){
         let data = this.builder.encode(message).finish();
         this.socket.send(data);
     }

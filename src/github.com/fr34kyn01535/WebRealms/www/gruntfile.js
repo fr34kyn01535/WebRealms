@@ -35,7 +35,7 @@ module.exports = function(grunt) {
     },
     exec: {
       generateProto: {
-        command: 'pbjs -t static-module -w commonjs -o src/proto/webrealms.proto.js ../webrealms.proto && pbts  src/proto/webrealms.proto.js -o src/proto/webrealms.proto.d.ts',
+        command: 'pbjs -t static-module -w commonjs -o src/proto/webrealms.proto.js ../webrealms.proto && pbts src/proto/webrealms.proto.js -o src/proto/webrealms.proto.d.ts',
       }
     },
     watch: {

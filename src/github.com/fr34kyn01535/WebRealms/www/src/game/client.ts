@@ -1,9 +1,9 @@
-import * as root from '../proto/webrealms.proto.js'
+import { main }  from '../proto/webrealms.proto.js'
 
 class Listener {
-    public topic: root.webrealms.ProtocolMessage.MessageType | string;
+    public topic: main.ProtocolMessage.MessageType | string;
     public callback: Function;
-    public constructor(topic: root.webrealms.ProtocolMessage.MessageType | string,callback: Function){
+    public constructor(topic: main.ProtocolMessage.MessageType | string,callback: Function){
         this.topic = topic;
         this.callback = callback;
     }
@@ -13,17 +13,17 @@ export class Client {
     public worker: Worker 
     public listeners: Array<Listener> = []
     private builder;
-    public MessageType = root.webrealms.ProtocolMessage.MessageType;
-    public ProtocolMessage = root.webrealms.ProtocolMessage;
+    public MessageType = main.ProtocolMessage.MessageType;
+    public ProtocolMessage = main.ProtocolMessage;
     private id:string;
     public Connect() {
         let that = this;
-        let builder = this.builder = root.webrealms.ProtocolMessage;
+        let builder = this.builder = main.ProtocolMessage;
         let worker = this.worker = new Worker("dist/worker.bundle.min.js");
         worker.onmessage = function(event) {
             let name: string = event.data[0];
             if(name === "message"){
-                let data :root.webrealms.ProtocolMessage = root.webrealms.ProtocolMessage.fromObject(event.data[1]);
+                let data :main.ProtocolMessage = main.ProtocolMessage.fromObject(event.data[1]);
                 if(data.Sender != that.id){
                     console.log("WORKER <",data);
                     that.listeners.filter((listener)=>{ return listener.topic == data.Type}).forEach((listener)=>{
@@ -45,20 +45,20 @@ export class Client {
         this.send("connect");
     }
     
-    private send(content: root.webrealms.ProtocolMessage$Properties | string){
+    private send(content: main.ProtocolMessage$Properties | string){
         console.log("WORKER >",content);
         if(typeof content == 'string'){
             this.worker.postMessage(content);
         }else{
             content.Sender = this.id;
             let message = this.builder.create(content);
-            this.worker.postMessage(["message",root.webrealms.ProtocolMessage.toObject(message)]);
+            this.worker.postMessage(["message",main.ProtocolMessage.toObject(message)]);
         }
     }
 
     public SendPosition(x: number,y: number){
         this.send({
-            Type: root.webrealms.ProtocolMessage.MessageType.POSITION,
+            Type: main.ProtocolMessage.MessageType.POSITION,
             Position: [{
                 X: x,
                 Y: y
@@ -68,7 +68,7 @@ export class Client {
     
     public SendConnect(username: string,password: string,session: string = null){
         this.send({
-            Type: root.webrealms.ProtocolMessage.MessageType.CONNECT,
+            Type: main.ProtocolMessage.MessageType.CONNECT,
             Connect: {
                 Username: username,
                 Password: password,
@@ -79,11 +79,11 @@ export class Client {
 
     public SendPing(){
         this.send({
-            Type: root.webrealms.ProtocolMessage.MessageType.PING
+            Type: main.ProtocolMessage.MessageType.PING
         });
     }
 
-    public on(topic: root.webrealms.ProtocolMessage.MessageType | string,callback: any){
+    public on(topic: main.ProtocolMessage.MessageType | string,callback: any){
         this.listeners.push(new Listener(topic,callback));
     }
 }

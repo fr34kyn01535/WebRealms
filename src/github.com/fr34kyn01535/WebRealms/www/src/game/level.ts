@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser-ce';
 import { Client } from './client'; 
-import * as root from '../proto/webrealms.proto.js'
+import { main }  from '../proto/webrealms.proto.js'
 
 export class Level extends Phaser.State {
     private connection:Client;
@@ -30,7 +30,7 @@ export class Level extends Phaser.State {
             that.players = {};
         });
 
-        connection.on(connection.MessageType.POSITION,function(data: root.webrealms.ProtocolMessage){
+        connection.on(connection.MessageType.POSITION,function(data: main.ProtocolMessage){
             if(that.players[data.Sender]){
                 for(let i in data.Position){
                     let position = data.Position[i];
@@ -40,7 +40,7 @@ export class Level extends Phaser.State {
             }
         });
 
-        connection.on(connection.MessageType.SPAWN,function(data: root.webrealms.ProtocolMessage){
+        connection.on(connection.MessageType.SPAWN,function(data: main.ProtocolMessage){
             let enemy = that.game.add.sprite(70, 100,"white");
             enemy.tint = 0xffccee;
             that.enemies.add(enemy);
@@ -50,14 +50,14 @@ export class Level extends Phaser.State {
             that.players[data.Sender] = enemy;
         });
 
-        connection.on(connection.MessageType.UNSPAWN,function(data: root.webrealms.ProtocolMessage){
+        connection.on(connection.MessageType.UNSPAWN,function(data: main.ProtocolMessage){
             if(that.players[data.Sender]){
                 that.players[data.Sender].kill();
                 delete that.players[data.Sender];
             }
         });
 
-        connection.on(connection.MessageType.HELLO,function(data: root.webrealms.ProtocolMessage){
+        connection.on(connection.MessageType.HELLO,function(data: main.ProtocolMessage){
             that.player.revive();
         });
         connection.Connect();
@@ -77,9 +77,9 @@ export class Level extends Phaser.State {
         this.game.world.enableBody = true;
 
         this.cursor = this.game.input.keyboard.createCursorKeys();
+        this.connect();
         this.createPlayer();
         this.createLevel();
-        this.connect();
 
         this.stage.disableVisibilityChange = true;     
     }
@@ -93,6 +93,7 @@ export class Level extends Phaser.State {
     private createLevel(){
         this.walls = this.game.add.group();
         this.enemies = this.game.add.group();
+        this.fire = this.game.add.group();
         var level = [
             'xxxxxxxxxxxxxxxxxxxxxx',
             'x         x          x',
